@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ComponentFactory, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +6,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'fdi';
+  title = 'FDI';
+
+
+  crewMemberSelection: number[] = [];
+  constructor() {
+  }
+
+  addCrewMemberSelection() {
+    this.crewMemberSelection.push(this.crewMemberSelection.length)
+  }
+
+  removeCrewMemberSelection(id: number) {
+    this.crewMemberSelection.splice(id-1, 1)
+  }
 }
