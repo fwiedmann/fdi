@@ -11,12 +11,17 @@
     flex-wrap: wrap;
     justify-content: left;
     padding-left: 10px;
-
   }
+  &__add_crew-selection_button {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 350px;
+    width: 18vw;
 
-  &__add_crew-selection_button{
-    padding-top: 10px;
-    margin-top: auto;
-    margin-bottom: auto;
+    border-radius: 25px;
+    border-color: grey;
+    border-style: dashed;
   }
 }

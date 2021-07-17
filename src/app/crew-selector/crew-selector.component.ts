@@ -1,5 +1,14 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FormControl } from '@angular/forms';
+
+export type CrewSelectorResponse = {
+  id: string;
+  crew: CheckedMembers[];
+  startTime: string;
+  endTime: string;
+}
+
 
 export type CheckedMembers = {
   name: string
@@ -13,27 +22,29 @@ export type CheckedMembers = {
   styleUrls: ['./crew-selector.component.scss']
 })
 
-export class CrewSelectorComponent implements OnInit, OnDestroy {
+export class CrewSelectorComponent implements OnInit {
   @Input()
   crewMembers: string[] = []
-
   @Input()
-  id: number | undefined = -10
-
+  id: string = ''
 
   @Output()
-  deleteComponent$: EventEmitter<number> = new EventEmitter<number>()
+  crewSelectorResponse$: EventEmitter<CrewSelectorResponse> = new EventEmitter<CrewSelectorResponse>()
+  @Output()
+  deleteComponent$: EventEmitter<string> = new EventEmitter<string>()
 
   checkedMembers: CheckedMembers[] = []
+  columnsToDisplay = ['members', 'duty', 'dirtAllowance'];
 
-  columnsToDisplay = ['members', 'imEinsatz', 'sz'];
+  dateControlStart = new FormControl();
+  dateControlEnd = new FormControl();
+
+  startTime: Date = this.dateControlStart.value
+  endTime: Date = this.dateControlEnd.value
 
   constructor() {
   }
 
-  ngOnDestroy(): void {
-       console.log('destroyed‚')
-    }
 
   ngOnInit(): void {
   }
@@ -48,6 +59,7 @@ export class CrewSelectorComponent implements OnInit, OnDestroy {
     if (!change.checked) {
       this.checkedMembers = this.checkedMembers.filter(value => value.name !== change.source.name)
     }
+    this.emmitCurrentState()
   }
 
   onCheckboxEventDirtAllowance(change: MatCheckboxChange) {
@@ -81,7 +93,23 @@ export class CrewSelectorComponent implements OnInit, OnDestroy {
   }
 
   deleteComponent() {
-    console.log('delte')
     this.deleteComponent$.emit(this.id);
+  }
+
+  private emmitCurrentState() {
+    this.crewSelectorResponse$.emit({
+      id: this.id,
+      crew: this.checkedMembers,
+      startTime: '',
+      endTime: ''
+    })
+  }
+
+  updateInputStart() {
+    this.startTime = this.dateControlStart.value
+  }
+
+  updateInputEnd() {
+    this.startTime = this.dateControlStart.value
   }
 }

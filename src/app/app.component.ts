@@ -1,4 +1,7 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component } from '@angular/core';
+import { v4 as uuidv4 } from 'uuid';
+import { CrewSelectorResponse } from './crew-selector/crew-selector.component';
+
 
 @Component({
   selector: 'app-root',
@@ -8,16 +11,26 @@ import { Component, ComponentFactory, ComponentFactoryResolver, ViewChild, ViewC
 export class AppComponent {
   title = 'FDI';
 
+  crewSelectionCards: string[] = [];
+  crewSelections: Map<string, CrewSelectorResponse> = new Map<string, CrewSelectorResponse>()
 
-  crewMemberSelection: number[] = [];
   constructor() {
   }
 
   addCrewMemberSelection() {
-    this.crewMemberSelection.push(this.crewMemberSelection.length)
+    this.crewSelectionCards.push(uuidv4())
   }
 
-  removeCrewMemberSelection(id: number) {
-    this.crewMemberSelection.splice(id-1, 1)
+  removeCrewMemberSelection(id: string) {
+    this.crewSelections.delete(id);
+    this.crewSelectionCards = this.crewSelectionCards.filter(value => id !== value)
+  }
+
+  updateCrewSelections(selection: CrewSelectorResponse) {
+    if (selection.crew.length < 1) {
+      this.crewSelections.delete(selection.id);
+      return
+    }
+    this.crewSelections.set(selection.id, selection)
   }
 }

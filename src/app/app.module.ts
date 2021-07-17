@@ -14,11 +14,20 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { EmergencyBaseDataComponent } from './emergency-base-data/emergency-base-data.component';
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    CrewSelectorComponent
+    CrewSelectorComponent,
+    EmergencyBaseDataComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +41,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     MatTableModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
