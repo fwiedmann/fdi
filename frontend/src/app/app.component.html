@@ -1,15 +1,15 @@
 
 <div class="app">
   <mat-toolbar color="primary">
-    <span>
+    <span class="app__header">
       <p>Fire Department Invoice 🚒</p>
     </span>
   </mat-toolbar>
 
   <div class="app__body">
-    <h2>Emergency Data</h2>
-    <emergency-base-data (emergencyData$)="log($event)"></emergency-base-data>
-    <h2>Time Period / Member Selections </h2>
+    <h2 class="app__header">Emergency Data</h2>
+    <emergency-base-data (emergencyData$)="pdfInput.metaData=$event"></emergency-base-data>
+    <h2 class="app__header">Time Period / Member Selections </h2>
     <div class="app__crew-selections">
       <ng-container *ngFor="let l of crewSelectionCards">
         <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)"  [id]="l" [crewMembers]="['Felix', 'Gregor']">
@@ -21,5 +21,7 @@
           </button>
       </div>
     </div>
+    <pdf-generator>
+    </pdf-generator>
   </div>
 </div>

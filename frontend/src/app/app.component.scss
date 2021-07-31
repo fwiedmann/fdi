@@ -1,17 +1,20 @@
 .app {
   min-height: 100vh;
   width: 100vw;
-  &__body{
+
+  &__body {
     padding: 10px;
     min-height: 100vh;
     background-color: #e6f0fa;
   }
-  &__crew-selections{
+
+  &__crew-selections {
     display: flex;
     flex-wrap: wrap;
     justify-content: left;
     padding-left: 10px;
   }
+
   &__add_crew-selection_button {
     margin: 20px;
     display: flex;
@@ -23,5 +26,9 @@
     border-radius: 25px;
     border-color: grey;
     border-style: dashed;
+  }
+
+  &__header{
+    margin-left: 20px;
   }
 }

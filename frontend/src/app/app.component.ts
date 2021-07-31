@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 import { CrewSelectorResponse } from './crew-selector/crew-selector.component';
 import { MetaData } from './emergency-base-data/emergency-base-data.component';
+import { InputData } from './pdf-generator/pdf-generator.component';
 
 
 @Component({
@@ -14,6 +15,8 @@ export class AppComponent {
 
   crewSelectionCards: string[] = [];
   crewSelections: Map<string, CrewSelectorResponse> = new Map<string, CrewSelectorResponse>()
+
+  pdfInput: InputData = {}
 
   constructor() {
   }
@@ -33,9 +36,5 @@ export class AppComponent {
       return
     }
     this.crewSelections.set(selection.id, selection)
-  }
-
-  log(event: MetaData) {
-    console.log(event)
   }
 }
