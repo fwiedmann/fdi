@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 import { CrewSelectorResponse } from './crew-selector/crew-selector.component';
+import { MetaData } from './emergency-base-data/emergency-base-data.component';
 
 
 @Component({
@@ -32,5 +33,9 @@ export class AppComponent {
       return
     }
     this.crewSelections.set(selection.id, selection)
+  }
+
+  log(event: MetaData) {
+    console.log(event)
   }
 }

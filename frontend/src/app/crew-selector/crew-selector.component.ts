@@ -110,6 +110,6 @@ export class CrewSelectorComponent implements OnInit {
   }
 
   updateInputEnd() {
-    this.startTime = this.dateControlStart.value
+    this.endTime = this.dateControlStart.value;
   }
 }
