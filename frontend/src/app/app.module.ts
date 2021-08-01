@@ -20,7 +20,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { EmergencyBaseDataComponent } from './emergency-base-data/emergency-base-data.component';
-import { PdfGeneratorComponent } from './pdf-generator/pdf-generator.component';
 
 
 
@@ -29,7 +28,6 @@ import { PdfGeneratorComponent } from './pdf-generator/pdf-generator.component';
     AppComponent,
     CrewSelectorComponent,
     EmergencyBaseDataComponent,
-    PdfGeneratorComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 import { CrewSelectorResponse } from './crew-selector/crew-selector.component';
 import { MetaData } from './emergency-base-data/emergency-base-data.component';
-import { InputData } from './pdf-generator/pdf-generator.component';
+import { PdfGeneratorService } from './pdf-generator.service';
 
 
 @Component({
@@ -15,10 +15,9 @@ export class AppComponent {
 
   crewSelectionCards: string[] = [];
   crewSelections: Map<string, CrewSelectorResponse> = new Map<string, CrewSelectorResponse>()
+  emergencyMetaData: MetaData | undefined;
 
-  pdfInput: InputData = {}
-
-  constructor() {
+  constructor(private pdfGeneratorService: PdfGeneratorService) {
   }
 
   addCrewMemberSelection() {
@@ -36,5 +35,14 @@ export class AppComponent {
       return
     }
     this.crewSelections.set(selection.id, selection)
+  }
+
+  generatePdf() {
+    if (!this.emergencyMetaData) {
+      console.log('meta data is undefined')
+      return
+    }
+
+    this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()));
   }
 }

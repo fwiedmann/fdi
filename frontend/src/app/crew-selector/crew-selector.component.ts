@@ -5,8 +5,8 @@ import { FormControl } from '@angular/forms';
 export type CrewSelectorResponse = {
   id: string;
   crew: CheckedMembers[];
-  startTime: string;
-  endTime: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 
@@ -100,8 +100,8 @@ export class CrewSelectorComponent implements OnInit {
     this.crewSelectorResponse$.emit({
       id: this.id,
       crew: this.checkedMembers,
-      startTime: '',
-      endTime: ''
+      startDate: this.startTime,
+      endDate: this.endTime
     })
   }
 
