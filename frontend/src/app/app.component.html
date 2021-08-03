@@ -1,4 +1,3 @@
-
 <div class="app">
   <mat-toolbar color="primary">
     <span class="app__header">
@@ -12,18 +11,28 @@
     <h2 class="app__header">Time Period / Member Selections </h2>
     <div class="app__crew-selections">
       <ng-container *ngFor="let l of crewSelectionCards">
-        <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)"  [id]="l" [crewMembers]="['Felix', 'Gregor']">
+        <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)" [id]="l" [crewMembers]="['Felix', 'Gregor']">
         </app-crew-selector>
       </ng-container>
-        <div class="app__add_crew-selection_button">
-          <button matTooltip="Mannschaft Zeitangabe hinzufügen" mat-mini-fab color="accent" (click)="addCrewMemberSelection()">
-            <mat-icon>add</mat-icon>
-          </button>
+      <div class="app__add_crew-selection_button">
+        <button matTooltip="Mannschaft Zeitangabe hinzufügen" mat-mini-fab color="accent" (click)="addCrewMemberSelection()">
+          <mat-icon>add</mat-icon>
+        </button>
       </div>
     </div>
-    <div class="app__pdf_generator">
-      <button (click)="generatePdf()"mat-raised-button color="primary">Generate</button>
-    </div>
 
+    <mat-card>
+      <mat-card-content class="app__pdf_generator">
+        <div class="app__pdf_generator__item">
+          <mat-form-field appearance="outline" class="emergency-base-data__item">
+            <mat-label>Filename</mat-label>
+            <input matInput (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'">
+          </mat-form-field>
+        </div>
+        <div class="app__pdf_generator__ite">
+          <button (click)="generatePdf()" mat-raised-button color="primary">Generate</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

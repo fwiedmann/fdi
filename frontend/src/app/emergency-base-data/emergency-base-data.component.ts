@@ -7,7 +7,7 @@ export type MetaData = {
   hasInvoiceReceiver: boolean;
   invoiceReceiverName?: string;
   invoiceReceiverAddress?: string;
-  invoiceReceiverPostcode?: string;
+  invoiceReceiverPostcodeAndCity?: string;
 }
 
 @Component({
@@ -25,7 +25,7 @@ export class EmergencyBaseDataComponent implements OnInit {
 
   startDate: Date = new Date();
   endDate: Date = new Date();
-  hasInvoiceReceiver: boolean = false
+  hasInvoiceReceiver: boolean = false;
   invoiceReceiverName?: string;
   invoiceReceiverAddress?: string;
   invoiceReceiverPostcode?: string;
@@ -33,14 +33,15 @@ export class EmergencyBaseDataComponent implements OnInit {
   dateControlStart = new FormControl();
   dateControlEnd = new FormControl();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
   editDone(event: any) {
     if (!event.checked) {
-      return
+      return;
     }
     this.emergencyData$.emit({
       startDate: this.startDate,
@@ -48,7 +49,7 @@ export class EmergencyBaseDataComponent implements OnInit {
       hasInvoiceReceiver: this.hasInvoiceReceiver,
       invoiceReceiverName: this.invoiceReceiverName,
       invoiceReceiverAddress: this.invoiceReceiverAddress,
-      invoiceReceiverPostcode: this.invoiceReceiverPostcode
-    })
+      invoiceReceiverPostcodeAndCity: this.invoiceReceiverPostcode
+    });
   }
 }

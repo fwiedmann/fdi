@@ -14,35 +14,36 @@ export class AppComponent {
   title = 'FDI';
 
   crewSelectionCards: string[] = [];
-  crewSelections: Map<string, CrewSelectorResponse> = new Map<string, CrewSelectorResponse>()
+  crewSelections: Map<string, CrewSelectorResponse> = new Map<string, CrewSelectorResponse>();
   emergencyMetaData: MetaData | undefined;
+  fileName: string = 'kostenaufstellung';
 
   constructor(private pdfGeneratorService: PdfGeneratorService) {
   }
 
   addCrewMemberSelection() {
-    this.crewSelectionCards.push(uuidv4())
+    this.crewSelectionCards.push(uuidv4());
   }
 
   removeCrewMemberSelection(id: string) {
     this.crewSelections.delete(id);
-    this.crewSelectionCards = this.crewSelectionCards.filter(value => id !== value)
+    this.crewSelectionCards = this.crewSelectionCards.filter(value => id !== value);
   }
 
   updateCrewSelections(selection: CrewSelectorResponse) {
     if (selection.crew.length < 1) {
       this.crewSelections.delete(selection.id);
-      return
+      return;
     }
-    this.crewSelections.set(selection.id, selection)
+    this.crewSelections.set(selection.id, selection);
   }
 
   generatePdf() {
     if (!this.emergencyMetaData) {
-      console.log('meta data is undefined')
-      return
+      console.log('meta data is undefined');
+      return;
     }
 
-    this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()));
+    this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()), { forAHalfHourInEuro: 6, forDirtAllowanceInEuro: 1 }, this.fileName);
   }
 }

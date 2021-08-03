@@ -28,7 +28,20 @@
     border-style: dashed;
   }
 
-  &__header{
+  &__header {
     margin-left: 20px;
+  }
+
+  &__pdf_generator {
+    margin: 20px;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    &__item {
+      margin-right: 15px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
   }
 }

@@ -1,16 +1,16 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormControl } from '@angular/forms';
 
 export type CrewSelectorResponse = {
   id: string;
-  crew: CheckedMembers[];
+  crew: CheckedMember[];
   startDate: Date;
   endDate: Date;
 }
 
 
-export type CheckedMembers = {
+export type CheckedMember = {
   name: string
   dirtAllowance: boolean
 }
@@ -24,23 +24,23 @@ export type CheckedMembers = {
 
 export class CrewSelectorComponent implements OnInit {
   @Input()
-  crewMembers: string[] = []
+  crewMembers: string[] = [];
   @Input()
-  id: string = ''
+  id: string = '';
 
   @Output()
-  crewSelectorResponse$: EventEmitter<CrewSelectorResponse> = new EventEmitter<CrewSelectorResponse>()
+  crewSelectorResponse$: EventEmitter<CrewSelectorResponse> = new EventEmitter<CrewSelectorResponse>();
   @Output()
-  deleteComponent$: EventEmitter<string> = new EventEmitter<string>()
+  deleteComponent$: EventEmitter<string> = new EventEmitter<string>();
 
-  checkedMembers: CheckedMembers[] = []
+  checkedMembers: CheckedMember[] = [];
   columnsToDisplay = ['members', 'duty', 'dirtAllowance'];
 
   dateControlStart = new FormControl();
   dateControlEnd = new FormControl();
 
-  startTime: Date = this.dateControlStart.value
-  endTime: Date = this.dateControlEnd.value
+  startDate: Date = new Date();
+  endDate: Date = new Date();
 
   constructor() {
   }
@@ -52,14 +52,14 @@ export class CrewSelectorComponent implements OnInit {
   onCheckboxEventInOperation(change: MatCheckboxChange) {
     if (change.checked) {
       if (change.source.name != null) {
-        this.checkedMembers.push({name: change.source.name, dirtAllowance: false} );
+        this.checkedMembers.push({ name: change.source.name, dirtAllowance: false });
       }
     }
 
     if (!change.checked) {
-      this.checkedMembers = this.checkedMembers.filter(value => value.name !== change.source.name)
+      this.checkedMembers = this.checkedMembers.filter(value => value.name !== change.source.name);
     }
-    this.emmitCurrentState()
+    this.emmitCurrentState();
   }
 
   onCheckboxEventDirtAllowance(change: MatCheckboxChange) {
@@ -67,18 +67,18 @@ export class CrewSelectorComponent implements OnInit {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
           if (change.source.name === value.name) {
-            this.checkedMembers[index] = { name: value.name, dirtAllowance: true}
+            this.checkedMembers[index] = { name: value.name, dirtAllowance: true };
           }
-        })
+        });
       }
     }
     if (!change.checked) {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
           if (change.source.name === value.name) {
-            this.checkedMembers[index] = { name: value.name, dirtAllowance: false}
+            this.checkedMembers[index] = { name: value.name, dirtAllowance: false };
           }
-        })
+        });
       }
     }
   }
@@ -89,7 +89,7 @@ export class CrewSelectorComponent implements OnInit {
         return true;
       }
     }
-    return false
+    return false;
   }
 
   deleteComponent() {
@@ -100,16 +100,18 @@ export class CrewSelectorComponent implements OnInit {
     this.crewSelectorResponse$.emit({
       id: this.id,
       crew: this.checkedMembers,
-      startDate: this.startTime,
-      endDate: this.endTime
-    })
+      startDate: this.startDate,
+      endDate: this.endDate
+    });
   }
 
   updateInputStart() {
-    this.startTime = this.dateControlStart.value
+    this.startDate = this.dateControlStart.value;
+    this.emmitCurrentState();
   }
 
   updateInputEnd() {
-    this.endTime = this.dateControlStart.value;
+    this.endDate = this.dateControlEnd.value;
+    this.emmitCurrentState();
   }
 }
