@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormControl } from '@angular/forms';
+import { CrewMembersService } from '../crew-members.service';
 
 export type CrewSelectorResponse = {
   id: string;
@@ -23,7 +24,6 @@ export type CheckedMember = {
 })
 
 export class CrewSelectorComponent implements OnInit {
-  @Input()
   crewMembers: string[] = [];
   @Input()
   id: string = '';
@@ -42,11 +42,12 @@ export class CrewSelectorComponent implements OnInit {
   startDate: Date = new Date();
   endDate: Date = new Date();
 
-  constructor() {
+  constructor(private crewMemberService: CrewMembersService) {
   }
 
 
   ngOnInit(): void {
+    this.crewMemberService.listAll().subscribe(members => this.crewMembers = members);
   }
 
   onCheckboxEventInOperation(change: MatCheckboxChange) {

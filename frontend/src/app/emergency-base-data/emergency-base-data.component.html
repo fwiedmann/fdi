@@ -3,18 +3,18 @@
   <mat-card>
     <mat-card-content class="emergency-base-data__box">
       <div class="emergency-base-data__content">
-        <mat-form-field class="emergency-base-data__item" appearance="outline"  >
+        <mat-form-field class="emergency-base-data__item" appearance="outline">
           <mat-label>Choose a start</mat-label>
           <input matInput [ngxMatDatetimePicker]="picker1" (dateChange)="startDate= dateControlStart.value" [formControl]="dateControlStart" [disabled]="editingDone">
           <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
-          <ngx-mat-datetime-picker #picker1></ngx-mat-datetime-picker>
+          <ngx-mat-datetime-picker [showSeconds]="true" #picker1></ngx-mat-datetime-picker>
         </mat-form-field>
 
         <mat-form-field class="emergency-base-data__item" appearance="outline">
           <mat-label>Choose an end</mat-label>
-          <input matInput [ngxMatDatetimePicker]="picker2"  (dateChange)="endDate= dateControlEnd.value" [formControl]="dateControlEnd" [disabled]="editingDone">
+          <input matInput [ngxMatDatetimePicker]="picker2" (dateChange)="endDate= dateControlEnd.value" [formControl]="dateControlEnd" [disabled]="editingDone">
           <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
-          <ngx-mat-datetime-picker #picker2></ngx-mat-datetime-picker>
+          <ngx-mat-datetime-picker [showSeconds]="true" #picker2></ngx-mat-datetime-picker>
         </mat-form-field>
 
         <mat-checkbox [(ngModel)]="hasInvoiceReceiver" class="emergency-base-data__item" [disabled]="editingDone">With Invoice Receiver</mat-checkbox>
@@ -23,16 +23,16 @@
           <input matInput (change)="invoiceReceiverName=$any($event.target).value" [disabled]="editingDone">
         </mat-form-field>
 
-      <mat-form-field *ngIf="hasInvoiceReceiver" appearance="outline" class="emergency-base-data__item">
-        <mat-label>Invoice Receiver Address</mat-label>
-        <input matInput (change)="invoiceReceiverAddress=$any($event.target).value" [disabled]="editingDone">
-      </mat-form-field>
+        <mat-form-field *ngIf="hasInvoiceReceiver" appearance="outline" class="emergency-base-data__item">
+          <mat-label>Invoice Receiver Address</mat-label>
+          <input matInput (change)="invoiceReceiverAddress=$any($event.target).value" [disabled]="editingDone">
+        </mat-form-field>
 
-      <mat-form-field *ngIf="hasInvoiceReceiver" appearance="outline" class="emergency-base-data__item">
-        <mat-label>Invoice Receiver Postcode</mat-label>
-        <input matInput (change)="invoiceReceiverPostcode=$any($event.target).value" [disabled]="editingDone" >
-      </mat-form-field>
-    </div>
+        <mat-form-field *ngIf="hasInvoiceReceiver" appearance="outline" class="emergency-base-data__item">
+          <mat-label>Invoice Receiver Postcode</mat-label>
+          <input matInput (change)="invoiceReceiverPostcode=$any($event.target).value" [disabled]="editingDone">
+        </mat-form-field>
+      </div>
       <mat-checkbox [(ngModel)]="editingDone" (change)="editDone($event)" class="emergency-base-data__item">Data complete</mat-checkbox>
     </mat-card-content>
   </mat-card>

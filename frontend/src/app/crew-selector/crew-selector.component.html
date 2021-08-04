@@ -11,12 +11,12 @@
     <mat-form-field>
       <input matInput [ngxMatDatetimePicker]="picker1" (dateChange)="updateInputStart()" placeholder="Choose a start" [formControl]="dateControlStart">
       <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker1></ngx-mat-datetime-picker>
+      <ngx-mat-datetime-picker [showSeconds]="true" #picker1></ngx-mat-datetime-picker>
     </mat-form-field>
     <mat-form-field>
       <input matInput [ngxMatDatetimePicker]="picker2" (dateChange)="updateInputEnd()" placeholder="Choose an end" [formControl]="dateControlEnd">
       <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker2></ngx-mat-datetime-picker>
+      <ngx-mat-datetime-picker [showSeconds]="true" #picker2></ngx-mat-datetime-picker>
     </mat-form-field>
 
     <h3><b>Select members</b></h3>

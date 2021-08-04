@@ -19,6 +19,7 @@ export class AppComponent {
   fileName: string = 'kostenaufstellung';
 
   constructor(private pdfGeneratorService: PdfGeneratorService) {
+
   }
 
   addCrewMemberSelection() {
