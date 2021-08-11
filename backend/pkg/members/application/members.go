@@ -12,8 +12,32 @@ type CreateMemberInput struct {
 	Surname string
 }
 
-// MemberService defines all available actions on the members domain
-type MemberService interface {
-	CreateMember(ctx context.Context, input CreateMemberInput)
-	ListMembers(ctx context.Context) []members.Member
+// Service defines all available actions on the members domain
+type Service interface {
+	CreateMember(ctx context.Context, input CreateMemberInput) (string, error)
+	ListMembers(ctx context.Context) ([]members.Member, error)
+}
+
+func NewService(repo members.Repository) Service {
+	return MembersService{repo: repo}
+}
+
+type MembersService struct {
+	repo members.Repository
+}
+
+func (m MembersService) CreateMember(ctx context.Context, input CreateMemberInput) (string, error) {
+	member, err := members.NewMember(input.Name, input.Surname)
+	if err != nil {
+		return "", err
+	}
+	err = m.repo.Save(member)
+	if err != nil {
+		return "", err
+	}
+	return member.Id, nil
+}
+
+func (m MembersService) ListMembers(ctx context.Context) ([]members.Member, error) {
+	return m.repo.List()
 }

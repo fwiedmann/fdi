@@ -78,17 +78,20 @@ func (b *BoltDBRepository) Save(member members.Member) error {
 
 func (b *BoltDBRepository) List() ([]members.Member, error) {
 	foundMembers := make([]members.Member, 0)
+
+	addMember := func(_, v []byte) error {
+		output := MemberDbEntity{}
+		err := json.Unmarshal(v, &output)
+		if err != nil {
+			return err
+		}
+		foundMembers = append(foundMembers, mapToDomainEntity(output))
+		return nil
+	}
+
 	listMembers := func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(membersBucketName)
-		return bucket.ForEach(func(_, v []byte) error {
-			output := MemberDbEntity{}
-			err := json.Unmarshal(v, &output)
-			if err != nil {
-				return err
-			}
-			foundMembers = append(foundMembers, mapToDomainEntity(output))
-			return nil
-		})
+		return bucket.ForEach(addMember)
 	}
 
 	err := b.db.View(listMembers)
