@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	AllReadyExistsError = errors.New("member already exits")
+	AllReadyExistsError = errors.New("member already exists")
+	NotExistsError      = errors.New("member does not exists")
 )
 
 var membersBucketName = []byte("members")
@@ -20,8 +21,8 @@ type MemberDbEntity struct {
 	Surname string `json:"surname"`
 }
 
-func mapToDomainEntity(member MemberDbEntity) members.Member {
-	return members.Member{
+func mapToDomainEntity(member MemberDbEntity) *members.Member {
+	return &members.Member{
 		Id:      member.Id,
 		Name:    member.Name,
 		Surname: member.Surname,
@@ -60,6 +61,36 @@ type BoltDBRepository struct {
 	db *bolt.DB
 }
 
+// FindById lookup the member by id, if not found it will return nil for member
+func (b *BoltDBRepository) FindById(id string) (*members.Member, error) {
+	var member *members.Member
+	err := b.db.View(func(tx *bolt.Tx) error {
+		dbMember := tx.Bucket(membersBucketName).Get([]byte(id))
+		if dbMember == nil {
+			return nil
+		}
+
+		var m MemberDbEntity
+		err := json.Unmarshal(dbMember, &m)
+		if err != nil {
+			return err
+		}
+
+		member = mapToDomainEntity(m)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return member, nil
+}
+
+func (b *BoltDBRepository) DeleteById(id string) error {
+	return b.db.Update(func(tx *bolt.Tx) error {
+		return tx.Bucket(membersBucketName).Delete([]byte(id))
+	})
+}
+
 func (b *BoltDBRepository) Save(member members.Member) error {
 	saveFunc := func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(membersBucketName)
@@ -85,7 +116,7 @@ func (b *BoltDBRepository) List() ([]members.Member, error) {
 		if err != nil {
 			return err
 		}
-		foundMembers = append(foundMembers, mapToDomainEntity(output))
+		foundMembers = append(foundMembers, *mapToDomainEntity(output))
 		return nil
 	}
 

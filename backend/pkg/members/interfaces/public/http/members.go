@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -11,7 +12,8 @@ import (
 	"github.com/fwiedmann/fdi/backend/pkg/members/application"
 )
 
-const memberHttpPath = "/members"
+const membersHttpPath = "/members"
+const membersHttpPathWithId = membersHttpPath + "/{id}"
 
 type MemberHttp struct {
 	Id      string `json:"id"`
@@ -23,8 +25,9 @@ func AddRoute(mux *mux.Router, repo members.Repository) {
 	res := MembersResource{
 		service: application.NewService(repo),
 	}
-	mux.Methods(http.MethodPost).Path(memberHttpPath).HandlerFunc(res.Create)
-	mux.Methods(http.MethodGet).Path(memberHttpPath).HandlerFunc(res.List)
+	mux.Methods(http.MethodPost).Path(membersHttpPath).HandlerFunc(res.Create)
+	mux.Methods(http.MethodGet).Path(membersHttpPath).HandlerFunc(res.List)
+	mux.Methods(http.MethodDelete).Path(membersHttpPathWithId).HandlerFunc(res.DeleteById)
 }
 
 type MembersResource struct {
@@ -89,4 +92,27 @@ func (mr MembersResource) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (mr MembersResource) DeleteById(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		_ = r.Body.Close()
+	}()
+	params := mux.Vars(r)
+	id, ok := params["id"]
+	if !ok {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	err := mr.service.DeleteMember(r.Context(), application.DeleteMemberInput{Id: id})
+	if err != nil {
+		if errors.Is(err, application.NotExistsError) {
+			http.NotFound(w, r)
+			return
+		}
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

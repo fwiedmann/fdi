@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormControl } from '@angular/forms';
-import { CrewMembersService } from '../crew-members.service';
+import { CrewMembersService, Member } from '../crew-members.service';
 
 export type CrewSelectorResponse = {
   id: string;
@@ -24,7 +24,7 @@ export type CheckedMember = {
 })
 
 export class CrewSelectorComponent implements OnInit {
-  crewMembers: string[] = [];
+  crewMembers: Member[] = [];
   @Input()
   id: string = '';
 
