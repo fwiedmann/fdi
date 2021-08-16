@@ -20,7 +20,7 @@ func main() {
 	router := mux.NewRouter()
 	membersHttp.AddRoute(router, membersRepo)
 
-	corsHandler := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}))
+	corsHandler := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}), handlers.AllowedMethods([]string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions}))
 
 	server := http.Server{
 		Addr:         ":8080",

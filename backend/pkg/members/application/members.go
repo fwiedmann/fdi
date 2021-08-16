@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	NotExistsError = errors.New("member does not exists")
+	AllReadyExistsError = errors.New("member already exists")
+	NotExistsError      = errors.New("member does not exists")
 )
 
 // CreateMemberInput is the required input in order to create a new Member
@@ -64,8 +65,8 @@ func (m MembersService) CreateMember(ctx context.Context, input CreateMemberInpu
 		return "", err
 	}
 
-	if found == nil {
-		return "", NotExistsError
+	if found != nil {
+		return "", AllReadyExistsError
 	}
 
 	err = m.repo.Save(member)

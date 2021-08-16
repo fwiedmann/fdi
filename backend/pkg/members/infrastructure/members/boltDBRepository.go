@@ -10,7 +10,6 @@ import (
 
 var (
 	AllReadyExistsError = errors.New("member already exists")
-	NotExistsError      = errors.New("member does not exists")
 )
 
 var membersBucketName = []byte("members")
