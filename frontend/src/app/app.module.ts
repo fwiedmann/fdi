@@ -20,6 +20,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { EmergencyBaseDataComponent } from './emergency-base-data/emergency-base-data.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CrewManagerComponent } from './crew-manager/crew-manager.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -28,28 +31,31 @@ import { EmergencyBaseDataComponent } from './emergency-base-data/emergency-base
     AppComponent,
     CrewSelectorComponent,
     EmergencyBaseDataComponent,
+    CrewManagerComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatListModule,
-    CdkAccordionModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatToolbarModule,
-    MatCardModule,
-    MatTableModule,
-    MatIconModule,
-    MatTooltipModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatInputModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatListModule,
+        CdkAccordionModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatToolbarModule,
+        MatCardModule,
+        MatTableModule,
+        MatIconModule,
+        MatTooltipModule,
+        NgxMatDatetimePickerModule,
+        NgxMatNativeDateModule,
+        MatDatepickerModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        MatDialogModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

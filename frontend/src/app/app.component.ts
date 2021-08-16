@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { CrewSelectorResponse } from './crew-selector/crew-selector.component';
 import { MetaData } from './emergency-base-data/emergency-base-data.component';
 import { PdfGeneratorService } from './pdf-generator.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CrewManagerComponent } from './crew-manager/crew-manager.component';
 
 
 @Component({
@@ -19,7 +21,10 @@ export class AppComponent {
   emergencyMetaData: MetaData | undefined;
   fileName: string = 'kostenaufstellung';
 
-  constructor(private pdfGeneratorService: PdfGeneratorService) {
+  constructor(
+    private pdfGeneratorService: PdfGeneratorService,
+    public dialog: MatDialog
+  ) {
 
   }
 
@@ -47,5 +52,9 @@ export class AppComponent {
     }
 
     this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()), { forAHalfHourInEuro: 6, forDirtAllowanceInEuro: 1 }, this.fileName);
+  }
+
+  openCrewMemberConfigDialog() {
+    this.dialog.open(CrewManagerComponent)
   }
 }
