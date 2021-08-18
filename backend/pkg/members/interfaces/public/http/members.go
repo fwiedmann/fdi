@@ -77,6 +77,10 @@ func (mr MembersResource) Create(w http.ResponseWriter, r *http.Request) {
 		Surname: member.Surname,
 	})
 	if err != nil {
+		if errors.Is(err, application.AllReadyExistsError) {
+			http.Error(w, err.Error(), http.StatusConflict)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

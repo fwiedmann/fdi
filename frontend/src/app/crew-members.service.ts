@@ -8,6 +8,12 @@ export type Member = {
   surname: string;
 }
 
+export type MemberCreateResponse = {
+  id: string
+}
+
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +21,13 @@ export type Member = {
 export class CrewMembersService {
 
   constructor(private http: HttpClient) { }
+
+  create(name: string, surname: string): Observable<MemberCreateResponse> {
+    return this.http.post<MemberCreateResponse>('http://localhost:8080/members',{
+      name: name,
+      surname: surname
+    });
+  }
 
   listAll(): Observable<Member[]> {
     return this.http.get<Member[]>('http://localhost:8080/members')

@@ -30,6 +30,9 @@
 
   &__header {
     margin-left: 20px;
+    &__headline{
+      margin: 0;
+    }
   }
 
   &__pdf_generator {

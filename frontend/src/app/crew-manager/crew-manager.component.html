@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Crew Members</h2>
+<mat-dialog-content class="crew-manager">
+  <div class="crew-manager__create__area">
+
+    <div class="crew-manager__create__content">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput (change)="memberToCreateName=$any($event.target).value">
+      </mat-form-field>
+    </div>
+
+    <div class="crew-manager__create__content">
+      <mat-form-field appearance="outline">
+      <mat-label>Surname</mat-label>
+      <input matInput (change)="memberToCreateSurname=$any($event.target).value">
+      </mat-form-field>
+    </div>
+
+    <div class="crew-manager__create__button">
+      <button (click)="createMember()" mat-raised-button color="primary">Create</button>
+    </div>
+  </div>
+
+  <div class="crew-manager__member__box">
+    <ng-container *ngFor="let member of crewMembers">
+      <div class="crew-manager__member__content">
+        <p>{{ member.name }} {{ member.surname}} </p>
+        <button (click)="deleteCrewMember(member.id)" mat-icon-button color="accent">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      </ng-container>
+  </div>
+</mat-dialog-content>
+
