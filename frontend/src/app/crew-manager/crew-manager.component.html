@@ -4,15 +4,15 @@
 
     <div class="crew-manager__create__content">
       <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput (change)="memberToCreateName=$any($event.target).value">
+        <mat-label>Surname</mat-label>
+        <input matInput (change)="memberToCreateSurname=$any($event.target).value">
       </mat-form-field>
     </div>
 
     <div class="crew-manager__create__content">
       <mat-form-field appearance="outline">
-      <mat-label>Surname</mat-label>
-      <input matInput (change)="memberToCreateSurname=$any($event.target).value">
+        <mat-label>Name</mat-label>
+        <input matInput (keyup.enter)="createMember()"   (change)="memberToCreateName=$any($event.target).value">
       </mat-form-field>
     </div>
 
@@ -21,14 +21,14 @@
     </div>
   </div>
 
-  <div class="crew-manager__member__box">
+  <div class="crew-manager__member__box crew-manager__member__content__background">
     <ng-container *ngFor="let member of crewMembers">
-      <div class="crew-manager__member__content">
-        <p>{{ member.name }} {{ member.surname}} </p>
-        <button (click)="deleteCrewMember(member.id)" mat-icon-button color="accent">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
+        <div class="crew-manager__member__content">
+          <p>{{ member.surname }} {{ member.name}} </p>
+          <button (click)="deleteCrewMember(member.id)" mat-icon-button color="accent">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
       </ng-container>
   </div>
 </mat-dialog-content>

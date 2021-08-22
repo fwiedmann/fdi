@@ -11,8 +11,7 @@ export type CrewSelectorResponse = {
 }
 
 
-export type CheckedMember = {
-  name: string
+export type CheckedMember = Member & {
   dirtAllowance: boolean
 }
 
@@ -50,25 +49,25 @@ export class CrewSelectorComponent implements OnInit {
     this.crewMemberService.listAll().subscribe(members => this.crewMembers = members);
   }
 
-  onCheckboxEventInOperation(change: MatCheckboxChange) {
+  onCheckboxEventInOperation(change: MatCheckboxChange, member: Member) {
     if (change.checked) {
       if (change.source.name != null) {
-        this.checkedMembers.push({ name: change.source.name, dirtAllowance: false });
+        this.checkedMembers.push({ id: member.id, name: member.name, surname: member.surname,  dirtAllowance: false });
       }
     }
 
     if (!change.checked) {
-      this.checkedMembers = this.checkedMembers.filter(value => value.name !== change.source.name);
+      this.checkedMembers = this.checkedMembers.filter(value => value.id !== member.id);
     }
     this.emmitCurrentState();
   }
 
-  onCheckboxEventDirtAllowance(change: MatCheckboxChange) {
+  onCheckboxEventDirtAllowance(change: MatCheckboxChange, member: Member) {
     if (change.checked) {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
-          if (change.source.name === value.name) {
-            this.checkedMembers[index] = { name: value.name, dirtAllowance: true };
+          if (member.id === value.id) {
+            this.checkedMembers[index] = { id: member.id, name: member.name, surname: member.surname,  dirtAllowance: true };
           }
         });
       }
@@ -76,17 +75,17 @@ export class CrewSelectorComponent implements OnInit {
     if (!change.checked) {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
-          if (change.source.name === value.name) {
-            this.checkedMembers[index] = { name: value.name, dirtAllowance: false };
+          if (member.id === value.id) {
+            this.checkedMembers[index] = { id: member.id, name: member.name, surname: member.surname,  dirtAllowance: false };
           }
         });
       }
     }
   }
 
-  isPermittedForDirtAllowance(memberName: string): boolean {
+  isPermittedForDirtAllowance(id: string): boolean {
     for (const member of this.checkedMembers) {
-      if (member.name === memberName) {
+      if (member.id === id) {
         return true;
       }
     }

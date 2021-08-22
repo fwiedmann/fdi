@@ -30,7 +30,7 @@ export class CrewMembersService {
   }
 
   listAll(): Observable<Member[]> {
-    return this.http.get<Member[]>('http://localhost:8080/members')
+    return this.http.get<Member[]>('http://localhost:8080/members?sort=true')
   }
 
   deleteById(id: string): Observable<void> {

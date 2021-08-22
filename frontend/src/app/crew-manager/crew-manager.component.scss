@@ -29,12 +29,13 @@
   }
 
   &__member__content {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    padding-left: 5px;
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
+    /*&__background div:nth-child(2n) {
+      background-color: #E5E5E5;
+    }*/
   }
 
   &__member__box{

@@ -18,12 +18,13 @@ export class PdfGeneratorService {
   constructor() {
   }
 
-  private doc = new jsPDF();
   private pdfY = 10;
 
   generatePdf(metadata: MetaData, crewsSelections: CrewSelectorResponse[], costRate: CostRate, fileName: string) {
     this.pdfY = 10;
     const doc = new jsPDF();
+    let currentPage = 1;
+
     // header
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(167, 41, 32);
@@ -50,7 +51,7 @@ export class PdfGeneratorService {
     doc.text('Kostenberechnung', 20, this.addY(5));
 
     doc.setFont('helvetica', 'normal');
-    doc.text(`${metadata.startDate.getHours()}:${metadata.startDate.getMinutes() === 0 ? '00' : 0} Uhr bis ${metadata.endDate.getHours()}:${metadata.endDate.getMinutes() === 0 ? '00' : 0} Uhr    rund ${PdfGeneratorService.calculateHalfHoursCount(metadata.startDate, metadata.endDate)} x 0,5 Stunden`, 20, this.addY(5));
+    doc.text(`${PdfGeneratorService.buildHoursRepresentation(metadata.startDate)} bis ${PdfGeneratorService.buildHoursRepresentation(metadata.endDate)}    rund ${PdfGeneratorService.calculateHalfHoursCount(metadata.startDate, metadata.endDate)} x 0,5 Stunden`, 20, this.addY(5));
     this.drawLine(doc);
     this.addEmptyLine(doc);
 
@@ -61,10 +62,16 @@ export class PdfGeneratorService {
         this.createCrewSelectionHeader(doc, selection, halfHoursCount);
         this.addEmptyLine(doc);
 
-        selection.crew.forEach(member => {
+
+        selection.crew.forEach((member, index) => {
+          if (currentPage == 1 && index == 36) {
+            this.pdfY = 10;
+            currentPage++;
+            doc.addPage();
+          }
           const memberCosts = PdfGeneratorService.calculateCrwMemberCostRate(member, costRate, halfHoursCount);
           totalCosts += memberCosts;
-          doc.text(`${member.name}`, 20, this.addY(5));
+          doc.text(`${member.surname} ${member.name}`, 20, this.addY(5));
           doc.text('=', 60, this.addY(0));
           doc.text(`${memberCosts} €`, 110, this.addY(0));
         });
@@ -152,5 +159,20 @@ export class PdfGeneratorService {
       baseRate += costRate.forDirtAllowanceInEuro;
     }
     return baseRate * halfHourCount;
+  }
+
+  private static buildHoursRepresentation(date: Date): string {
+
+    let hour = date.getHours().toString();
+    if (date.getHours() < 10) {
+      hour = '0' + hour;
+    }
+
+
+    let minutes = date.getMinutes().toString();
+    if (date.getMinutes() < 10) {
+      minutes = '0' + minutes;
+    }
+    return hour + ':' + minutes + ' Uhr';
   }
 }
