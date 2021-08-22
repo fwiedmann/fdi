@@ -1,11 +1,15 @@
 <div class="app">
   <mat-toolbar color="primary">
+
     <span class="app__header">
       <p class="app__header__headline">Fire Department Invoice 🚒</p>
     </span>
-    <span class="app__header" >
+
+
+    <span class="app__header">
       <button mat-raised-button color="accent" (click)="openCrewMemberConfigDialog()">Crew Member Config</button>
     </span>
+
 
   </mat-toolbar>
 
@@ -25,18 +29,20 @@
       </div>
     </div>
 
-    <mat-card>
-      <mat-card-content class="app__pdf_generator">
-        <div class="app__pdf_generator__item">
-          <mat-form-field appearance="outline" class="emergency-base-data__item">
-            <mat-label>Filename</mat-label>
-            <input matInput (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'">
-          </mat-form-field>
-        </div>
-        <div class="app__pdf_generator__ite">
-          <button (click)="generatePdf()" mat-raised-button color="primary">Generate</button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <div class="app__pdf_generator_box">
+      <mat-card>
+        <mat-card-content class="app__pdf_generator">
+          <div class="app__pdf_generator__item">
+            <mat-form-field appearance="outline" class="emergency-base-data__item">
+              <mat-label>Filename</mat-label>
+              <input matInput (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'">
+            </mat-form-field>
+          </div>
+          <div class="app__pdf_generator__item">
+            <button (click)="generatePdf()" mat-raised-button color="primary">Generate</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>

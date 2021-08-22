@@ -1,5 +1,7 @@
 .emergency-base-data {
   padding: 20px;
+  width: 30vw;
+  min-width: 270px;
 
   &__content {
     display: flex;
@@ -10,7 +12,7 @@
   &__box {
   }
 
-  &__item{
+  &__item {
     margin-right: 15px;
     margin-top: auto;
     margin-bottom: auto;

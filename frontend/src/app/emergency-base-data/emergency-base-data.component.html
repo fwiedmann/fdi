@@ -18,6 +18,8 @@
         </mat-form-field>
 
         <mat-checkbox [(ngModel)]="hasInvoiceReceiver" class="emergency-base-data__item" [disabled]="editingDone">With Invoice Receiver</mat-checkbox>
+      </div>
+      <div class="emergency-base-data__content">
         <mat-form-field *ngIf="hasInvoiceReceiver" appearance="outline" class="emergency-base-data__item">
           <mat-label>Invoice Receiver Name</mat-label>
           <input matInput (change)="invoiceReceiverName=$any($event.target).value" [disabled]="editingDone">

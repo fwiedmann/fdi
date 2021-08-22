@@ -2,8 +2,8 @@ package members
 
 import (
 	"errors"
-	"fmt"
 
+	"github.com/fwiedmann/fdi/backend/pkg/log"
 	"github.com/google/uuid"
 )
 
@@ -13,7 +13,7 @@ var (
 	IdCreationError           = errors.New("could not create member id")
 )
 
-// Member represents a active member of a fire department which can be selected for invoices
+// Member represents an active member of a fire department which can be selected for invoices
 type Member struct {
 	Id      string
 	Name    string
@@ -21,7 +21,7 @@ type Member struct {
 }
 
 // NewMember enforces the business rules related to a Member
-func NewMember(name, surname string) (Member, error) {
+func NewMember(log log.Logger, name, surname string) (Member, error) {
 	if len(name) == 0 {
 		return Member{}, InvalidMemberNameError
 	}
@@ -32,7 +32,7 @@ func NewMember(name, surname string) (Member, error) {
 
 	id, err := uuid.NewUUID()
 	if err != nil {
-		fmt.Println(err)
+		log.Errorf("could not create member because uuid creation failed: %s", err)
 		return Member{}, IdCreationError
 	}
 

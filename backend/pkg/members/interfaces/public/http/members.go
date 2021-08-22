@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/fwiedmann/fdi/backend/pkg/log"
+
 	"github.com/gorilla/mux"
 
 	"github.com/fwiedmann/fdi/backend/pkg/members/domain/members"
@@ -21,9 +23,10 @@ type MemberHttp struct {
 	Surname string `json:"surname"`
 }
 
-func AddRoute(mux *mux.Router, repo members.Repository) {
+func AddRoute(log log.Logger, mux *mux.Router, repo members.Repository) {
 	res := MembersResource{
-		service: application.NewService(repo),
+		log:     log,
+		service: application.NewService(log, repo),
 	}
 	mux.Methods(http.MethodPost).Path(membersHttpPath).HandlerFunc(res.Create)
 	mux.Methods(http.MethodGet).Path(membersHttpPath).HandlerFunc(res.List)
@@ -31,6 +34,7 @@ func AddRoute(mux *mux.Router, repo members.Repository) {
 }
 
 type MembersResource struct {
+	log     log.Logger
 	service application.Service
 }
 

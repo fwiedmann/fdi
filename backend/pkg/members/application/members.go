@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/fwiedmann/fdi/backend/pkg/log"
+
 	"github.com/fwiedmann/fdi/backend/pkg/members/domain/members"
 )
 
@@ -30,12 +32,16 @@ type Service interface {
 	DeleteMember(ctx context.Context, input DeleteMemberInput) error
 }
 
-func NewService(repo members.Repository) Service {
-	return MembersService{repo: repo}
+func NewService(log log.Logger, repo members.Repository) Service {
+	return MembersService{
+		log:  log,
+		repo: repo,
+	}
 }
 
 // MembersService implements Service
 type MembersService struct {
+	log  log.Logger
 	repo members.Repository
 }
 
@@ -49,13 +55,13 @@ func (m MembersService) DeleteMember(ctx context.Context, input DeleteMemberInpu
 	if found == nil {
 		return NotExistsError
 	}
-
+	m.log.Debugf("delete member with id %s", input.Id)
 	return m.repo.DeleteById(input.Id)
 }
 
 // CreateMember if the member with the given input does not exist in the repository
 func (m MembersService) CreateMember(ctx context.Context, input CreateMemberInput) (string, error) {
-	member, err := members.NewMember(input.Name, input.Surname)
+	member, err := members.NewMember(m.log, input.Name, input.Surname)
 	if err != nil {
 		return "", err
 	}
@@ -73,6 +79,7 @@ func (m MembersService) CreateMember(ctx context.Context, input CreateMemberInpu
 	if err != nil {
 		return "", err
 	}
+	m.log.Debugf("created member with id %s", member.Id)
 	return member.Id, nil
 }
 
