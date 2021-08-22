@@ -3,11 +3,14 @@ package members
 import (
 	"errors"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 var (
 	InvalidMemberNameError    = errors.New("invalid member name")
 	InvalidMemberSurnameError = errors.New("invalid member surname")
+	IdCreationError           = errors.New("could not create member id")
 )
 
 // Member represents a active member of a fire department which can be selected for invoices
@@ -27,8 +30,14 @@ func NewMember(name, surname string) (Member, error) {
 		return Member{}, InvalidMemberSurnameError
 	}
 
+	id, err := uuid.NewUUID()
+	if err != nil {
+		fmt.Println(err)
+		return Member{}, IdCreationError
+	}
+
 	return Member{
-		Id:      fmt.Sprintf("%s_%s", name, surname),
+		Id:      id.String(),
 		Name:    name,
 		Surname: surname,
 	}, nil

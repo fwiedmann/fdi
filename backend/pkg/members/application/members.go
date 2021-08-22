@@ -26,7 +26,7 @@ type DeleteMemberInput struct {
 // Service defines all available actions on the members domain
 type Service interface {
 	CreateMember(ctx context.Context, input CreateMemberInput) (string, error)
-	ListMembers(ctx context.Context) ([]members.Member, error)
+	ListMembers(ctx context.Context, options members.ListOptions) ([]members.Member, error)
 	DeleteMember(ctx context.Context, input DeleteMemberInput) error
 }
 
@@ -77,6 +77,6 @@ func (m MembersService) CreateMember(ctx context.Context, input CreateMemberInpu
 }
 
 // ListMembers which are stored in the repository
-func (m MembersService) ListMembers(ctx context.Context) ([]members.Member, error) {
-	return m.repo.List()
+func (m MembersService) ListMembers(ctx context.Context, options members.ListOptions) ([]members.Member, error) {
+	return m.repo.List(options)
 }

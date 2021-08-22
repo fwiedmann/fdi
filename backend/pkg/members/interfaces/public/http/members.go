@@ -39,7 +39,14 @@ func (mr MembersResource) List(w http.ResponseWriter, r *http.Request) {
 		_ = r.Body.Close()
 	}()
 
-	membersList, err := mr.service.ListMembers(r.Context())
+	listOptions := members.ListOptions{}
+	if val := r.URL.Query().Get("sort"); val != "" {
+		if val == "true" {
+			listOptions.SortAlphabetically = true
+		}
+	}
+
+	membersList, err := mr.service.ListMembers(r.Context(), listOptions)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

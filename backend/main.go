@@ -23,7 +23,7 @@ func main() {
 	corsHandler := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}), handlers.AllowedMethods([]string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions, http.MethodHead}), handlers.AllowedHeaders([]string{"content-type"}), handlers.AllowCredentials())
 
 	server := http.Server{
-		Addr:         ":8080",
+		Addr:         "localhost:8080",
 		Handler:      corsHandler(router),
 		WriteTimeout: time.Second * 10,
 		ReadTimeout:  time.Second * 10,

@@ -3,6 +3,7 @@ package members
 import (
 	"encoding/json"
 	"errors"
+	"sort"
 
 	"github.com/fwiedmann/fdi/backend/pkg/members/domain/members"
 	bolt "go.etcd.io/bbolt"
@@ -106,7 +107,7 @@ func (b *BoltDBRepository) Save(member members.Member) error {
 	return b.db.Update(saveFunc)
 }
 
-func (b *BoltDBRepository) List() ([]members.Member, error) {
+func (b *BoltDBRepository) List(options members.ListOptions) ([]members.Member, error) {
 	foundMembers := make([]members.Member, 0)
 
 	addMember := func(_, v []byte) error {
@@ -119,14 +120,30 @@ func (b *BoltDBRepository) List() ([]members.Member, error) {
 		return nil
 	}
 
-	listMembers := func(tx *bolt.Tx) error {
+	listMembersFun := func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(membersBucketName)
 		return bucket.ForEach(addMember)
 	}
 
-	err := b.db.View(listMembers)
+	err := b.db.View(listMembersFun)
 	if err != nil {
 		return nil, err
 	}
+
+	if options.SortAlphabetically {
+		sort.Slice(foundMembers, func(i, j int) bool {
+			if foundMembers[i].Surname < foundMembers[j].Surname {
+				return true
+			}
+			// if booth surnames are identically, check for name
+			if foundMembers[i].Surname == foundMembers[j].Surname {
+				if foundMembers[i].Name == foundMembers[j].Name {
+					return true
+				}
+			}
+			return false
+		})
+	}
+
 	return foundMembers, nil
 }
