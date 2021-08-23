@@ -137,7 +137,7 @@ func (b *BoltDBRepository) List(options members.ListOptions) ([]members.Member, 
 			}
 			// if booth surnames are identically, check for name
 			if foundMembers[i].Surname == foundMembers[j].Surname {
-				if foundMembers[i].Name == foundMembers[j].Name {
+				if foundMembers[i].Name < foundMembers[j].Name {
 					return true
 				}
 			}

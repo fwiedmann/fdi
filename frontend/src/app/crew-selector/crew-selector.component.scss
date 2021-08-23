@@ -26,3 +26,8 @@
 td.mat-cell, th.mat-header-cell {
   text-align: center;
 }
+
+.mat-card {
+  max-height: 400px;
+  overflow-y: auto;
+}
