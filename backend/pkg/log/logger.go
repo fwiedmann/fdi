@@ -9,8 +9,6 @@ type Logger interface {
 	Errorf(format string, args ...interface{})
 }
 
-var defaultLogger Logger
-
 func InitDefaultLogger(logLevel string) (Logger, error) {
 	parsedLevel, err := logrus.ParseLevel(logLevel)
 	if err != nil {
@@ -21,6 +19,5 @@ func InitDefaultLogger(logLevel string) (Logger, error) {
 	logger.SetLevel(parsedLevel)
 	logger.SetFormatter(&logrus.TextFormatter{})
 	logger.SetReportCaller(true)
-	defaultLogger = logger
-	return defaultLogger, nil
+	return logger, nil
 }
