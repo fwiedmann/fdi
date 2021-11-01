@@ -1,6 +1,8 @@
 package log
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/sirupsen/logrus"
+)
 
 type Logger interface {
 	Debugf(format string, args ...interface{})
@@ -14,7 +16,6 @@ func InitDefaultLogger(logLevel string) (Logger, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	logger := logrus.New()
 	logger.SetLevel(parsedLevel)
 	logger.SetFormatter(&logrus.TextFormatter{})
