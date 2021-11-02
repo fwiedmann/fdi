@@ -1,10 +1,12 @@
 package domain
 
 import (
-	"github.com/fwiedmann/fdi/backend/pkg/shared/mock"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/fwiedmann/fdi/backend/pkg/shared/mock"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewInvoice(t *testing.T) {
@@ -23,8 +25,11 @@ func TestNewInvoice(t *testing.T) {
 		{
 			wantErr: false,
 			expectedResponse: Invoice{
-				StartDate: testDate,
-				EndDate:   testDate,
+				CreatedAt:      testDate,
+				ModifiedAt:     testDate,
+				LastAccessedAt: testDate,
+				StartDate:      testDate,
+				EndDate:        testDate,
 				TimeRanges: []TimeRange{
 					{
 						StartDate: testDate,
@@ -57,6 +62,17 @@ func TestNewInvoice(t *testing.T) {
 				},
 			},
 		},
+		{
+			wantErr:          true,
+			expectedResponse: Invoice{},
+			input: input{
+				invoiceData: RequiredInvoiceParameters{
+					StartDate:  testDate,
+					EndDate:    testDate,
+					TimeRanges: []TimeRange{},
+				},
+			},
+		},
 	}
 
 	t.Parallel()
@@ -64,7 +80,7 @@ func TestNewInvoice(t *testing.T) {
 		invoice, err := NewInvoice(mock.DateServiceMock{Time: testDate}, tt.input.invoiceData)
 
 		if (err != nil) != tt.wantErr {
-			t.Errorf("NewInvoice returned error %s, but test case want error: %t", err, tt.wantErr)
+			t.Errorf("NewInvoice returned a error: %t, but test case want error: %t", err != nil, tt.wantErr)
 			return
 		}
 		assert.Equal(t, invoice, tt.expectedResponse)
