@@ -16,7 +16,14 @@ type RequiredInvoiceParameters struct {
 // NewInvoice constructs an invoice. The DateService will be used for setting the correct date stamps for the entity
 func NewInvoice(ds shared.DateService, invoice RequiredInvoiceParameters) (Invoice, error) {
 
-	// Todo add validation
+	if len(invoice.TimeRanges) < 1 {
+		return Invoice{}, MissingRequiredInput("given time ranges are empty, should be a minimum of one")
+	}
+
+	if invoice.StartDate.Unix() >= invoice.EndDate.Unix() {
+		return Invoice{}, InvalidInputError("given start date is greater or equal then the given end date")
+	}
+
 	return Invoice{
 		TimeRanges:     invoice.TimeRanges,
 		CreatedAt:      ds.Now(),

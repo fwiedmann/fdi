@@ -16,24 +16,28 @@ func TestNewInvoice(t *testing.T) {
 
 	type test struct {
 		wantErr          bool
+		errMessage       string
 		expectedResponse Invoice
 		input            input
 	}
 
-	testDate := time.Now()
+	testDateTimestamp := time.Now()
+	testDateStart := testDateTimestamp
+	testDateEnd := testDateTimestamp.Add(time.Minute * 10)
+
 	tests := []test{
 		{
 			wantErr: false,
 			expectedResponse: Invoice{
-				CreatedAt:      testDate,
-				ModifiedAt:     testDate,
-				LastAccessedAt: testDate,
-				StartDate:      testDate,
-				EndDate:        testDate,
+				CreatedAt:      testDateTimestamp,
+				ModifiedAt:     testDateTimestamp,
+				LastAccessedAt: testDateTimestamp,
+				StartDate:      testDateStart,
+				EndDate:        testDateEnd,
 				TimeRanges: []TimeRange{
 					{
-						StartDate: testDate,
-						EndDate:   testDate,
+						StartDate: testDateStart,
+						EndDate:   testDateEnd,
 						Members: []Member{
 							{
 								Id:            "1",
@@ -45,12 +49,12 @@ func TestNewInvoice(t *testing.T) {
 			},
 			input: input{
 				invoiceData: RequiredInvoiceParameters{
-					StartDate: testDate,
-					EndDate:   testDate,
+					StartDate: testDateStart,
+					EndDate:   testDateEnd,
 					TimeRanges: []TimeRange{
 						{
-							StartDate: testDate,
-							EndDate:   testDate,
+							StartDate: testDateStart,
+							EndDate:   testDateEnd,
 							Members: []Member{
 								{
 									Id:            "1",
@@ -64,11 +68,12 @@ func TestNewInvoice(t *testing.T) {
 		},
 		{
 			wantErr:          true,
+			errMessage:       "Invoice error: missing input: given time ranges are empty, should be a minimum of one",
 			expectedResponse: Invoice{},
 			input: input{
 				invoiceData: RequiredInvoiceParameters{
-					StartDate:  testDate,
-					EndDate:    testDate,
+					StartDate:  testDateStart,
+					EndDate:    testDateEnd,
 					TimeRanges: []TimeRange{},
 				},
 			},
@@ -77,12 +82,15 @@ func TestNewInvoice(t *testing.T) {
 
 	t.Parallel()
 	for _, tt := range tests {
-		invoice, err := NewInvoice(mock.DateServiceMock{Time: testDate}, tt.input.invoiceData)
+		invoice, err := NewInvoice(mock.DateServiceMock{Time: testDateTimestamp}, tt.input.invoiceData)
 
 		if (err != nil) != tt.wantErr {
 			t.Errorf("NewInvoice returned a error: %t, but test case want error: %t", err != nil, tt.wantErr)
 			return
 		}
 		assert.Equal(t, invoice, tt.expectedResponse)
+		if (err != nil) && err.Error() != tt.errMessage {
+			t.Errorf("NewInoice returned error \"%s\", but wantetd \"%s\"", err.Error(), tt.errMessage)
+		}
 	}
 }
