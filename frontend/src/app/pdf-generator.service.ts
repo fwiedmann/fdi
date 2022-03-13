@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import { MetaData } from './emergency-base-data/emergency-base-data.component';
 import { CheckedMember, CrewSelectorResponse } from './crew-selector/crew-selector.component';
+import {count} from "rxjs/operators";
 
 
 export type CostRate = {
   forAHalfHourInEuro: number;
   forDirtAllowanceInEuro: number;
 }
+
+type pageState= { count: number, page: number }
 
 @Injectable({
   providedIn: 'root'
@@ -16,95 +19,111 @@ export type CostRate = {
 export class PdfGeneratorService {
 
   constructor() {
+    this.doc = new jsPDF()
   }
+
+  doc: jsPDF
+
 
   private pdfY = 10;
 
   generatePdf(metadata: MetaData, crewsSelections: CrewSelectorResponse[], costRate: CostRate, fileName: string) {
     this.pdfY = 10;
-    const doc = new jsPDF();
-    let currentPage = 1;
+    this.doc = new jsPDF();
 
     // header
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(167, 41, 32);
-    doc.setFontSize(20);
-    doc.addImage('assets/img/swd.png', 'PNG', 20, this.addY(0), 40, 30);
-    doc.text('Feuerwehr Schutterwald', 65, 38);
-    doc.addImage('assets/img/loewe.png', 'PNG', 155, 13, 15, 25);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setTextColor(167, 41, 32);
+    this.doc.setFontSize(20);
+    this.doc.addImage('assets/img/swd.png', 'PNG', 20, this.addY(0), 40, 30);
+    this.doc.text('Feuerwehr Schutterwald', 65, 38);
+    this.doc.addImage('assets/img/loewe.png', 'PNG', 155, 13, 15, 25);
 
     // city hall address
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(10);
-    doc.text('Gemeindeverwaltung Schutterwald', 20, this.addY(40));
-    doc.text('Hauptamt', 20, this.addY(5));
-    doc.text('z. Hd. Herrn Feger', 20, this.addY(5));
-    doc.text('77746 Schutterwald', 20, this.addY(5));
-    this.addEmptyLine(doc);
+    this.doc.setTextColor(0, 0, 0);
+    this.doc.setFontSize(10);
+    this.doc.text('Gemeindeverwaltung Schutterwald', 20, this.addY(40));
+    this.doc.text('Hauptamt', 20, this.addY(5));
+    this.doc.text('z. Hd. Herrn Feger', 20, this.addY(5));
+    this.doc.text('77746 Schutterwald', 20, this.addY(5));
+    this.addEmptyLine();
 
     // Emergency meta data
-    doc.text(`Anlage zum Einsatzbericht der FF Schutterwald vom ${PdfGeneratorService.buildFullDate(metadata.startDate)}`, 20, this.addY(5));
-    this.drawLine(doc);
-    doc.text('Antrag für Auslagen bzw. Einsatzvergütung', 20, this.addY(5));
+    this.doc.text(`Anlage zum Einsatzbericht der FF Schutterwald vom ${PdfGeneratorService.buildFullDate(metadata.startDate)}`, 20, this.addY(5));
+    this.drawLine();
+    this.doc.text('Antrag für Auslagen bzw. Einsatzvergütung', 20, this.addY(5));
 
-    doc.setFont('helvetica', 'bold');
-    doc.text('Kostenberechnung', 20, this.addY(5));
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('Kostenberechnung', 20, this.addY(5));
 
-    doc.setFont('helvetica', 'normal');
-    doc.text(`${PdfGeneratorService.buildHoursRepresentation(metadata.startDate)} bis ${PdfGeneratorService.buildHoursRepresentation(metadata.endDate)}    rund ${PdfGeneratorService.calculateHalfHoursCount(metadata.startDate, metadata.endDate)} x 0,5 Stunden`, 20, this.addY(5));
-    this.drawLine(doc);
-    this.addEmptyLine(doc);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text(`${PdfGeneratorService.buildHoursRepresentation(metadata.startDate)} bis ${PdfGeneratorService.buildHoursRepresentation(metadata.endDate)}    rund ${PdfGeneratorService.calculateHalfHoursCount(metadata.startDate, metadata.endDate)} x 0,5 Stunden`, 20, this.addY(5));
+    this.drawLine();
+    this.addEmptyLine();
 
     // generate list
     let totalCosts: number = 0;
+
+    let pageState: pageState = {
+      page: 1,
+      count: 0
+    }
+
+
     crewsSelections.forEach(selection => {
         const halfHoursCount = PdfGeneratorService.calculateHalfHoursCount(selection.startDate, selection.endDate);
-        this.createCrewSelectionHeader(doc, selection, halfHoursCount);
-        this.addEmptyLine(doc);
+        pageState = this.incLineCountAndAddPageIfNeeded(pageState, 2)
+        this.createCrewSelectionHeader(this.doc, selection, halfHoursCount);
+        this.addEmptyLine();
+
 
 
         selection.crew.forEach((member, index) => {
-          if (currentPage == 1 && index == 36) {
-            this.pdfY = 10;
-            currentPage++;
-            doc.addPage();
-          }
+          pageState = this.incLineCountAndAddPageIfNeeded(pageState, 1)
           const memberCosts = PdfGeneratorService.calculateCrwMemberCostRate(member, costRate, halfHoursCount);
           totalCosts += memberCosts;
-          doc.text(`${member.surname} ${member.name}`, 20, this.addY(5));
-          doc.text('=', 60, this.addY(0));
-          doc.text(`${memberCosts} €`, 110, this.addY(0));
+          this.doc.text(`${member.surname} ${member.name}`, 20, this.addY(5));
+          this.doc.text('=', 60, this.addY(0));
+          this.doc.text(`${memberCosts} €`, 110, this.addY(0));
         });
-        this.addEmptyLine(doc);
+        pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+        this.addEmptyLine();
       }
     );
 
     // total costs
-    this.drawLine(doc);
-    doc.text('Gesamtkosten', 20, this.addY(5));
-    doc.text('=', 60, this.addY(0));
-    doc.text(`${totalCosts} €`, 110, this.addY(0));
-    this.addEmptyLine(doc);
+    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.drawLine();
+    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.doc.text('Gesamtkosten', 20, this.addY(5));
+    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.doc.text('=', 60, this.addY(0));
+    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.doc.text(`${totalCosts} €`, 110, this.addY(0));
+    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.addEmptyLine();
+
 
     // footer
     // line 1
-    doc.setFont('helvetica', 'bold');
-    doc.text('Auslagen gemäß § 1 FwES:', 20, this.addY(5));
-    doc.text(`Rechnung an:`, 110, this.addY(0));
-    doc.setFont('helvetica', 'normal');
+    pageState = this.incLineCountAndAddPageIfNeeded(pageState, 1)
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('Auslagen gemäß § 1 FwES:', 20, this.addY(5));
+    this.doc.text(`Rechnung an:`, 110, this.addY(0));
+    this.doc.setFont('helvetica', 'normal');
 
     // line 2
-    doc.text(`Schutterwald, den: ${PdfGeneratorService.buildFullDate(new Date())}`, 20, this.addY(5));
-    metadata.hasInvoiceReceiver ? doc.text(`${metadata.invoiceReceiverName}`, 110, this.addY(0)) : '';
+    this.doc.text(`Schutterwald, den: ${PdfGeneratorService.buildFullDate(new Date())}`, 20, this.addY(5));
+    metadata.hasInvoiceReceiver ? this.doc.text(`${metadata.invoiceReceiverName}`, 110, this.addY(0)) : '';
 
     // line 3
-    doc.text(`Stantke Thomas, Kdt`, 20, this.addY(5));
-    metadata.hasInvoiceReceiver ? doc.text(`${metadata.invoiceReceiverAddress}`, 110, this.addY(0)) : '';
+    this.doc.text(`Stantke Thomas, Kdt`, 20, this.addY(5));
+    metadata.hasInvoiceReceiver ? this.doc.text(`${metadata.invoiceReceiverAddress}`, 110, this.addY(0)) : '';
 
     // line 3
-    metadata.hasInvoiceReceiver ? doc.text(`${metadata.invoiceReceiverPostcodeAndCity}`, 110, this.addY(5)) : '';
+    metadata.hasInvoiceReceiver ? this.doc.text(`${metadata.invoiceReceiverPostcodeAndCity}`, 110, this.addY(5)) : '';
 
-    doc.save(`${fileName}.pdf`);
+    this.doc.save(`${fileName}.pdf`);
   }
 
   private createCrewSelectionHeader(doc: jsPDF, selection: CrewSelectorResponse, halfHoursCount: number): void {
@@ -116,10 +135,10 @@ export class PdfGeneratorService {
     });
 
     if (dirtAllowance) {
-      doc.text(`${halfHoursCount} x 0,5 Stunden á 6 € + einmalige 2,00 € Schmutzzulage Pauschale`, 20, this.addY(5));
+      this.doc.text(`${halfHoursCount} x 0,5 Stunden á 6 € + einmalige 2,00 € Schmutzzulage Pauschale`, 20, this.addY(5));
       return;
     }
-    doc.text(`${halfHoursCount} x 0,5 Stunden á 6 €`, 20, this.addY(5));
+    this.doc.text(`${halfHoursCount} x 0,5 Stunden á 6 €`, 20, this.addY(5));
   }
 
   private addY(val: number): number {
@@ -127,12 +146,12 @@ export class PdfGeneratorService {
     return this.pdfY;
   }
 
-  private addEmptyLine(doc: jsPDF) {
-    doc.text('', 20, this.addY(5));
+  private addEmptyLine() {
+    this.doc.text('', 20, this.addY(5));
   }
 
-  private drawLine(doc: jsPDF) {
-    doc.line(20, this.addY(2), 160, this.pdfY); // horizontal line
+  private drawLine() {
+    this.doc.line(20, this.addY(2), 160, this.pdfY); // horizontal line
   }
 
   private static buildFullDate(date: Date): string {
@@ -174,4 +193,22 @@ export class PdfGeneratorService {
     }
     return hour + ':' + minutes + ' Uhr';
   }
+
+  incLineCountAndAddPageIfNeeded(state: pageState, inc: number): { count: number, page: number } {
+    if (state.count > 40) {
+      this.doc.addPage()
+      console.log(state.page+1)
+      // TODO funktioniert nicht
+      this.doc.setPage(state.page+1)
+      return {
+        count: 0,
+        page: state.page + 1
+      }
+    }
+    return {
+      count: state.count + inc,
+      page: state.page
+    }
+  }
 }
+

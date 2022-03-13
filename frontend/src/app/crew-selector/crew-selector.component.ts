@@ -26,6 +26,10 @@ export class CrewSelectorComponent implements OnInit {
   crewMembers: Member[] = [];
   @Input()
   id: string = '';
+  @Input()
+  startDate: Date | undefined;
+  @Input()
+  endDate: Date | undefined;
 
   @Output()
   crewSelectorResponse$: EventEmitter<CrewSelectorResponse> = new EventEmitter<CrewSelectorResponse>();
@@ -38,8 +42,7 @@ export class CrewSelectorComponent implements OnInit {
   dateControlStart = new FormControl();
   dateControlEnd = new FormControl();
 
-  startDate: Date = new Date();
-  endDate: Date = new Date();
+
 
   constructor(private crewMemberService: CrewMembersService) {
   }
@@ -100,9 +103,9 @@ export class CrewSelectorComponent implements OnInit {
     this.crewSelectorResponse$.emit({
       id: this.id,
       crew: this.checkedMembers,
-      startDate: this.startDate,
-      endDate: this.endDate
-    });
+      startDate: this.startDate ? this.startDate : Date.now(),
+      endDate: this.endDate ? this.endDate : Date.now()
+    } as CrewSelectorResponse);
   }
 
   updateInputStart() {

@@ -19,7 +19,7 @@
     <h2 class="app__header">Time Period / Member Selections </h2>
     <div class="app__crew-selections">
       <ng-container *ngFor="let l of crewSelectionCards">
-        <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)" [id]="l">
+        <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)" [startDate]="emergencyMetaData?.startDate" [endDate]="emergencyMetaData?.endDate" [id]="l">
         </app-crew-selector>
       </ng-container>
       <div class="app__add_crew-selection_button">
