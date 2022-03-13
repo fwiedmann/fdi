@@ -116,7 +116,7 @@ export class PdfGeneratorService {
     });
 
     if (dirtAllowance) {
-      doc.text(`${halfHoursCount} x 0,5 Stunden á 6 € + 1,00 € Schmutzzulage`, 20, this.addY(5));
+      doc.text(`${halfHoursCount} x 0,5 Stunden á 6 € + einmalige 2,00 € Schmutzzulage Pauschale`, 20, this.addY(5));
       return;
     }
     doc.text(`${halfHoursCount} x 0,5 Stunden á 6 €`, 20, this.addY(5));
@@ -154,11 +154,10 @@ export class PdfGeneratorService {
   }
 
   private static calculateCrwMemberCostRate(member: CheckedMember, costRate: CostRate, halfHourCount: number): number {
-    let baseRate = costRate.forAHalfHourInEuro;
     if (member.dirtAllowance) {
-      baseRate += costRate.forDirtAllowanceInEuro;
+     return (costRate.forAHalfHourInEuro * halfHourCount) + costRate.forDirtAllowanceInEuro;
     }
-    return baseRate * halfHourCount;
+    return costRate.forAHalfHourInEuro * halfHourCount;
   }
 
   private static buildHoursRepresentation(date: Date): string {

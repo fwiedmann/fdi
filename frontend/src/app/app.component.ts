@@ -51,7 +51,7 @@ export class AppComponent {
       return;
     }
 
-    this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()), { forAHalfHourInEuro: 6, forDirtAllowanceInEuro: 1 }, this.fileName);
+    this.pdfGeneratorService.generatePdf(this.emergencyMetaData, Array.from(this.crewSelections.values()), { forAHalfHourInEuro: 6, forDirtAllowanceInEuro: 2 }, this.fileName);
   }
 
   openCrewMemberConfigDialog() {
