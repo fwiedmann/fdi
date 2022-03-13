@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { jsPDF } from 'jspdf';
-import { MetaData } from './emergency-base-data/emergency-base-data.component';
-import { CheckedMember, CrewSelectorResponse } from './crew-selector/crew-selector.component';
-import {count} from "rxjs/operators";
+import {Injectable} from '@angular/core';
+import {jsPDF} from 'jspdf';
+import {MetaData} from './emergency-base-data/emergency-base-data.component';
+import {CheckedMember, CrewSelectorResponse} from './crew-selector/crew-selector.component';
 
 
 export type CostRate = {
@@ -10,10 +9,16 @@ export type CostRate = {
   forDirtAllowanceInEuro: number;
 }
 
-type pageState= { count: number, page: number }
+type pageState = { count: number, page: number }
+const defaultYStartPosition: number = 10
+const defaultPageState: pageState = {
+  page: 1,
+  count: 0
+}
 
 @Injectable({
   providedIn: 'root'
+
 })
 
 export class PdfGeneratorService {
@@ -22,14 +27,19 @@ export class PdfGeneratorService {
     this.doc = new jsPDF()
   }
 
-  doc: jsPDF
+  private doc: jsPDF
 
 
-  private pdfY = 10;
+  private pdfY = defaultYStartPosition;
+  private pageState: pageState = {
+    page: 1,
+    count: 0
+  }
 
   generatePdf(metadata: MetaData, crewsSelections: CrewSelectorResponse[], costRate: CostRate, fileName: string) {
     this.pdfY = 10;
     this.doc = new jsPDF();
+    this.pageState = defaultPageState
 
     // header
     this.doc.setFont('helvetica', 'normal');
@@ -64,49 +74,43 @@ export class PdfGeneratorService {
     // generate list
     let totalCosts: number = 0;
 
-    let pageState: pageState = {
-      page: 1,
-      count: 0
-    }
-
 
     crewsSelections.forEach(selection => {
         const halfHoursCount = PdfGeneratorService.calculateHalfHoursCount(selection.startDate, selection.endDate);
-        pageState = this.incLineCountAndAddPageIfNeeded(pageState, 2)
+        this.incLineCountAndAddPageIfNeeded(2)
         this.createCrewSelectionHeader(this.doc, selection, halfHoursCount);
         this.addEmptyLine();
 
 
-
         selection.crew.forEach((member, index) => {
-          pageState = this.incLineCountAndAddPageIfNeeded(pageState, 1)
+          this.incLineCountAndAddPageIfNeeded(1)
           const memberCosts = PdfGeneratorService.calculateCrwMemberCostRate(member, costRate, halfHoursCount);
           totalCosts += memberCosts;
           this.doc.text(`${member.surname} ${member.name}`, 20, this.addY(5));
           this.doc.text('=', 60, this.addY(0));
           this.doc.text(`${memberCosts} €`, 110, this.addY(0));
         });
-        pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+        this.incLineCountAndAddPageIfNeeded(1)
         this.addEmptyLine();
       }
     );
 
     // total costs
-    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.drawLine();
-    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.doc.text('Gesamtkosten', 20, this.addY(5));
-    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.doc.text('=', 60, this.addY(0));
-    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.doc.text(`${totalCosts} €`, 110, this.addY(0));
-    pageState = this.incLineCountAndAddPageIfNeeded( pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.addEmptyLine();
 
 
     // footer
     // line 1
-    pageState = this.incLineCountAndAddPageIfNeeded(pageState, 1)
+    this.incLineCountAndAddPageIfNeeded(1)
     this.doc.setFont('helvetica', 'bold');
     this.doc.text('Auslagen gemäß § 1 FwES:', 20, this.addY(5));
     this.doc.text(`Rechnung an:`, 110, this.addY(0));
@@ -174,7 +178,7 @@ export class PdfGeneratorService {
 
   private static calculateCrwMemberCostRate(member: CheckedMember, costRate: CostRate, halfHourCount: number): number {
     if (member.dirtAllowance) {
-     return (costRate.forAHalfHourInEuro * halfHourCount) + costRate.forDirtAllowanceInEuro;
+      return (costRate.forAHalfHourInEuro * halfHourCount) + costRate.forDirtAllowanceInEuro;
     }
     return costRate.forAHalfHourInEuro * halfHourCount;
   }
@@ -194,21 +198,16 @@ export class PdfGeneratorService {
     return hour + ':' + minutes + ' Uhr';
   }
 
-  incLineCountAndAddPageIfNeeded(state: pageState, inc: number): { count: number, page: number } {
-    if (state.count > 40) {
+  incLineCountAndAddPageIfNeeded(inc: number): void {
+    if (this.pageState.count > 35) {
       this.doc.addPage()
-      console.log(state.page+1)
-      // TODO funktioniert nicht
-      this.doc.setPage(state.page+1)
-      return {
-        count: 0,
-        page: state.page + 1
-      }
+      this.doc.setPage(this.pageState.page + 1)
+      this.pdfY = defaultYStartPosition
+      this.pageState.page = this.pageState.page + 1
+      this.pageState.count = 0
+      return
     }
-    return {
-      count: state.count + inc,
-      page: state.page
-    }
+    this.pageState.count = this.pageState.count + inc
   }
 }
 
