@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {jsPDF} from 'jspdf';
 import {MetaData} from './emergency-base-data/emergency-base-data.component';
-import {CheckedMember, CrewSelectorResponse} from './crew-selector/crew-selector.component';
+import {CheckedMember, CrewSelectorResponse} from './crew-selections/crew-selector/crew-selector.component';
 
 
 export type CostRate = {
@@ -23,17 +23,55 @@ const defaultPageState: pageState = {
 
 export class PdfGeneratorService {
 
-  constructor() {
-    this.doc = new jsPDF()
-  }
-
   private doc: jsPDF
-
-
   private pdfY = defaultYStartPosition;
   private pageState: pageState = {
     page: 1,
     count: 0
+  }
+
+  constructor() {
+    this.doc = new jsPDF()
+  }
+
+  private static buildFullDate(date: Date): string {
+    return `${date.getDate()}.${date.getUTCMonth() + 1}.${date.getFullYear()}`;
+  }
+
+  private static calculateHalfHoursCount(startDate: Date, endDate: Date): number {
+    const fits = PdfGeneratorService.calculateMinutesBetweenDates(startDate, endDate) / 30;
+    fits.toFixed();
+    if (!fits.toString().includes('.')) {
+      return fits;
+    }
+    return Number(fits.toString().split('.')[0]) + 1;
+  }
+
+  private static calculateMinutesBetweenDates(startDate: Date, endDate: Date): number {
+    const millSec = endDate.getTime() - startDate.getTime();
+    return Math.floor(millSec / 60000);
+  }
+
+  private static calculateCrwMemberCostRate(member: CheckedMember, costRate: CostRate, halfHourCount: number): number {
+    if (member.dirtAllowance) {
+      return (costRate.forAHalfHourInEuro * halfHourCount) + costRate.forDirtAllowanceInEuro;
+    }
+    return costRate.forAHalfHourInEuro * halfHourCount;
+  }
+
+  private static buildHoursRepresentation(date: Date): string {
+
+    let hour = date.getHours().toString();
+    if (date.getHours() < 10) {
+      hour = '0' + hour;
+    }
+
+
+    let minutes = date.getMinutes().toString();
+    if (date.getMinutes() < 10) {
+      minutes = '0' + minutes;
+    }
+    return hour + ':' + minutes + ' Uhr';
   }
 
   generatePdf(metadata: MetaData, crewsSelections: CrewSelectorResponse[], costRate: CostRate, fileName: string) {
@@ -130,6 +168,18 @@ export class PdfGeneratorService {
     this.doc.save(`${fileName}.pdf`);
   }
 
+  incLineCountAndAddPageIfNeeded(inc: number): void {
+    if (this.pageState.count > 35) {
+      this.doc.addPage()
+      this.doc.setPage(this.pageState.page + 1)
+      this.pdfY = defaultYStartPosition
+      this.pageState.page = this.pageState.page + 1
+      this.pageState.count = 0
+      return
+    }
+    this.pageState.count = this.pageState.count + inc
+  }
+
   private createCrewSelectionHeader(doc: jsPDF, selection: CrewSelectorResponse, halfHoursCount: number): void {
     let dirtAllowance: boolean = false;
     selection.crew.forEach(value => {
@@ -156,58 +206,6 @@ export class PdfGeneratorService {
 
   private drawLine() {
     this.doc.line(20, this.addY(2), 160, this.pdfY); // horizontal line
-  }
-
-  private static buildFullDate(date: Date): string {
-    return `${date.getDate()}.${date.getUTCMonth() + 1}.${date.getFullYear()}`;
-  }
-
-  private static calculateHalfHoursCount(startDate: Date, endDate: Date): number {
-    const fits = PdfGeneratorService.calculateMinutesBetweenDates(startDate, endDate) / 30;
-    fits.toFixed();
-    if (!fits.toString().includes('.')) {
-      return fits;
-    }
-    return Number(fits.toString().split('.')[0]) + 1;
-  }
-
-  private static calculateMinutesBetweenDates(startDate: Date, endDate: Date): number {
-    const millSec = endDate.getTime() - startDate.getTime();
-    return Math.floor(millSec / 60000);
-  }
-
-  private static calculateCrwMemberCostRate(member: CheckedMember, costRate: CostRate, halfHourCount: number): number {
-    if (member.dirtAllowance) {
-      return (costRate.forAHalfHourInEuro * halfHourCount) + costRate.forDirtAllowanceInEuro;
-    }
-    return costRate.forAHalfHourInEuro * halfHourCount;
-  }
-
-  private static buildHoursRepresentation(date: Date): string {
-
-    let hour = date.getHours().toString();
-    if (date.getHours() < 10) {
-      hour = '0' + hour;
-    }
-
-
-    let minutes = date.getMinutes().toString();
-    if (date.getMinutes() < 10) {
-      minutes = '0' + minutes;
-    }
-    return hour + ':' + minutes + ' Uhr';
-  }
-
-  incLineCountAndAddPageIfNeeded(inc: number): void {
-    if (this.pageState.count > 35) {
-      this.doc.addPage()
-      this.doc.setPage(this.pageState.page + 1)
-      this.pdfY = defaultYStartPosition
-      this.pageState.page = this.pageState.page + 1
-      this.pageState.count = 0
-      return
-    }
-    this.pageState.count = this.pageState.count + inc
   }
 }
 

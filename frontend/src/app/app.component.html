@@ -7,7 +7,7 @@
 
 
     <span class="app__header">
-      <button mat-raised-button color="accent" (click)="openCrewMemberConfigDialog()">Crew Member Config</button>
+      <button (click)="openCrewMemberConfigDialog()" color="accent" mat-raised-button>Crew Member Config</button>
     </span>
 
 
@@ -17,17 +17,8 @@
     <h2 class="app__header">Emergency Data</h2>
     <emergency-base-data (emergencyData$)="emergencyMetaData=$event"></emergency-base-data>
     <h2 class="app__header">Time Period / Member Selections </h2>
-    <div class="app__crew-selections">
-      <ng-container *ngFor="let l of crewSelectionCards">
-        <app-crew-selector (deleteComponent$)="removeCrewMemberSelection($event)" (crewSelectorResponse$)="updateCrewSelections($event)" [startDate]="emergencyMetaData?.startDate" [endDate]="emergencyMetaData?.endDate" [id]="l">
-        </app-crew-selector>
-      </ng-container>
-      <div class="app__add_crew-selection_button">
-        <button matTooltip="Mannschaft Zeitangabe hinzufügen" mat-mini-fab color="accent" (click)="addCrewMemberSelection()">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
-    </div>
+
+    <app-crew-selections (crewSelections$)="crewSelections=$event"></app-crew-selections>
 
     <div class="app__pdf_generator_box">
       <mat-card>
@@ -35,11 +26,11 @@
           <div class="app__pdf_generator__item">
             <mat-form-field appearance="outline" class="emergency-base-data__item">
               <mat-label>Filename</mat-label>
-              <input matInput (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'">
+              <input (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'" matInput>
             </mat-form-field>
           </div>
           <div class="app__pdf_generator__item">
-            <button (click)="generatePdf()" mat-raised-button color="primary">Generate</button>
+            <button (click)="generatePdf()" color="primary" mat-raised-button>Generate</button>
           </div>
         </mat-card-content>
       </mat-card>

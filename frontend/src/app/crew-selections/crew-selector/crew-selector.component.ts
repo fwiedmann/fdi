@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FormControl } from '@angular/forms';
-import { CrewMembersService, Member } from '../crew-members.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {MatCheckboxChange} from '@angular/material/checkbox';
+import {FormControl} from '@angular/forms';
+import {Member} from '../../crew-members.service';
 
 export type CrewSelectorResponse = {
   id: string;
@@ -23,7 +23,12 @@ export type CheckedMember = Member & {
 })
 
 export class CrewSelectorComponent implements OnInit {
+  @Input()
+  crewMembersInput: Member[] = [];
+
   crewMembers: Member[] = [];
+
+
   @Input()
   id: string = '';
   @Input()
@@ -36,6 +41,12 @@ export class CrewSelectorComponent implements OnInit {
   @Output()
   deleteComponent$: EventEmitter<string> = new EventEmitter<string>();
 
+  @Output()
+  memberChecked$: EventEmitter<string> = new EventEmitter<string>();
+  @Output()
+  memberUnchecked$: EventEmitter<string> = new EventEmitter<string>();
+
+
   checkedMembers: CheckedMember[] = [];
   columnsToDisplay = ['members', 'duty', 'dirtAllowance'];
 
@@ -43,24 +54,26 @@ export class CrewSelectorComponent implements OnInit {
   dateControlEnd = new FormControl();
 
 
+  constructor() {
 
-  constructor(private crewMemberService: CrewMembersService) {
   }
 
 
   ngOnInit(): void {
-    this.crewMemberService.listAll().subscribe(members => this.crewMembers = members);
+    this.crewMembers = this.crewMembersInput
   }
 
   onCheckboxEventInOperation(change: MatCheckboxChange, member: Member) {
     if (change.checked) {
+      this.memberChecked$.emit(member.id)
       if (change.source.name != null) {
-        this.checkedMembers.push({ id: member.id, name: member.name, surname: member.surname,  dirtAllowance: false });
+        this.checkedMembers.push({id: member.id, name: member.name, surname: member.surname, dirtAllowance: false});
       }
     }
 
     if (!change.checked) {
       this.checkedMembers = this.checkedMembers.filter(value => value.id !== member.id);
+      this.memberUnchecked$.emit(member.id)
     }
     this.emmitCurrentState();
   }
@@ -70,7 +83,12 @@ export class CrewSelectorComponent implements OnInit {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
           if (member.id === value.id) {
-            this.checkedMembers[index] = { id: member.id, name: member.name, surname: member.surname,  dirtAllowance: true };
+            this.checkedMembers[index] = {
+              id: member.id,
+              name: member.name,
+              surname: member.surname,
+              dirtAllowance: true
+            };
           }
         });
       }
@@ -79,7 +97,12 @@ export class CrewSelectorComponent implements OnInit {
       if (change.source.name != null) {
         this.checkedMembers.forEach((value, index) => {
           if (member.id === value.id) {
-            this.checkedMembers[index] = { id: member.id, name: member.name, surname: member.surname,  dirtAllowance: false };
+            this.checkedMembers[index] = {
+              id: member.id,
+              name: member.name,
+              surname: member.surname,
+              dirtAllowance: false
+            };
           }
         });
       }
@@ -96,16 +119,8 @@ export class CrewSelectorComponent implements OnInit {
   }
 
   deleteComponent() {
+    console.log(this.id)
     this.deleteComponent$.emit(this.id);
-  }
-
-  private emmitCurrentState() {
-    this.crewSelectorResponse$.emit({
-      id: this.id,
-      crew: this.checkedMembers,
-      startDate: this.startDate ? this.startDate : Date.now(),
-      endDate: this.endDate ? this.endDate : Date.now()
-    } as CrewSelectorResponse);
   }
 
   updateInputStart() {
@@ -116,5 +131,14 @@ export class CrewSelectorComponent implements OnInit {
   updateInputEnd() {
     this.endDate = this.dateControlEnd.value;
     this.emmitCurrentState();
+  }
+
+  private emmitCurrentState() {
+    this.crewSelectorResponse$.emit({
+      id: this.id,
+      crew: this.checkedMembers,
+      startDate: this.startDate ? this.startDate : Date.now(),
+      endDate: this.endDate ? this.endDate : Date.now()
+    } as CrewSelectorResponse);
   }
 }

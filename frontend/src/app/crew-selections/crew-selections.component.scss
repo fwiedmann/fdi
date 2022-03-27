@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: left;
+  padding-left: 10px;
+}
+
+.crew-selections {
+  &__add_crew-selection_button {
+    min-width: 270px;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 380px;
+    width: 18vw;
+
+    border-radius: 25px;
+    border-color: grey;
+    border-style: dashed;
+  }
+}
