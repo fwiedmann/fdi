@@ -77,12 +77,19 @@ export class CrewSelectionsComponent implements OnInit, OnDestroy {
   }
 
   removeCrewMemberSelection(id: string) {
-    console.log(id)
     this.crewSelections.delete(id);
     this.crewSelectionCards = this.crewSelectionCards.filter(value => id !== value);
     if (this.crewSelectionCards.length === 0) {
       this.memberState = this.availableMembers
     }
+  }
+
+  selectedMembersCount(): number {
+    let count = 0;
+    this.crewSelections.forEach(selection => {
+      count += selection.crew.length
+    })
+    return count
   }
 
 }

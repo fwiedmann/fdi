@@ -1,15 +1,29 @@
-:host {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: left;
-  padding-left: 10px;
-}
-
 .crew-selections {
+  margin-left: 20px;
+  margin-bottom: 20px;
+
+
+  &__count {
+    margin-bottom: 20px;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: left;
+
+    &__item {
+      margin-right: 10px;
+      margin-bottom: 10px;
+
+    }
+
+  }
+
+
   &__add_crew-selection_button {
     min-width: 270px;
-    margin: 20px;
     display: flex;
     align-items: center;
     justify-content: center;

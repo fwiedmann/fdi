@@ -15,25 +15,25 @@
 
   <div class="app__body">
     <h2 class="app__header">Emergency Data</h2>
-    <emergency-base-data (emergencyData$)="emergencyMetaData=$event"></emergency-base-data>
-    <h2 class="app__header">Time Period / Member Selections </h2>
-
-    <app-crew-selections (crewSelections$)="crewSelections=$event"></app-crew-selections>
-
-    <div class="app__pdf_generator_box">
-      <mat-card>
-        <mat-card-content class="app__pdf_generator">
-          <div class="app__pdf_generator__item">
-            <mat-form-field appearance="outline" class="emergency-base-data__item">
-              <mat-label>Filename</mat-label>
-              <input (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'" matInput>
-            </mat-form-field>
-          </div>
-          <div class="app__pdf_generator__item">
-            <button (click)="generatePdf()" color="primary" mat-raised-button>Generate</button>
-          </div>
-        </mat-card-content>
-      </mat-card>
+    <div class="app__meta_data">
+      <emergency-base-data (emergencyData$)="emergencyMetaData=$event"></emergency-base-data>
+      <div class="app__pdf_generator_box">
+        <mat-card>
+          <mat-card-content class="app__pdf_generator">
+            <div class="app__pdf_generator__item">
+              <mat-form-field appearance="outline" class="emergency-base-data__item">
+                <mat-label>Filename</mat-label>
+                <input (change)="fileName=$any($event.target).value" [defaultValue]="'kosten_aufstellung'" matInput>
+              </mat-form-field>
+            </div>
+            <div class="app__pdf_generator__item">
+              <button (click)="generatePdf()" color="primary" mat-raised-button>Generate</button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
+    
+    <app-crew-selections (crewSelections$)="crewSelections=$event"></app-crew-selections>
   </div>
 </div>

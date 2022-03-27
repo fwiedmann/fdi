@@ -119,7 +119,6 @@ export class CrewSelectorComponent implements OnInit {
   }
 
   deleteComponent() {
-    console.log(this.id)
     this.deleteComponent$.emit(this.id);
   }
 

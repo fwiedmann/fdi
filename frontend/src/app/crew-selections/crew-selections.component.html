@@ -1,17 +1,31 @@
-<ng-container *ngFor="let id of crewSelectionCards">
-  <app-crew-selector
-    (crewSelectorResponse$)="updateCrewSelections($event)"
-    (deleteComponent$)="removeCrewMemberSelection($event)"
-    (memberChecked$)="memberChecked($event)"
-    (memberUnchecked$)="memberUnchecked($event)"
+<div class="crew-selections">
+  <h2>Time Period / Member Selections </h2>
+  <div class="crew-selections__count">
+    <mat-chip-list>
+      <mat-chip>
+        {{'Selected members: '}}{{selectedMembersCount()}}
+      </mat-chip>
+    </mat-chip-list>
+  </div>
 
-    [crewMembersInput]="memberState"
-    [id]="id">
-  </app-crew-selector>
-</ng-container>
+  <div class="crew-selections__row">
+    <ng-container *ngFor="let id of crewSelectionCards">
+      <app-crew-selector (crewSelectorResponse$)="updateCrewSelections($event)"
+                         (deleteComponent$)="removeCrewMemberSelection($event)"
+                         (memberChecked$)="memberChecked($event)"
+                         (memberUnchecked$)="memberUnchecked($event)"
+                         [crewMembersInput]="memberState"
 
-<div class="crew-selections__add_crew-selection_button">
-  <button (click)="addCrewMemberSelection()" color="accent" mat-mini-fab matTooltip="Mannschaft Zeitangabe hinzufügen">
-    <mat-icon>add</mat-icon>
-  </button>
+                         [id]="id"
+                         class="crew-selections__row__item">
+      </app-crew-selector>
+    </ng-container>
+
+    <div class="crew-selections__add_crew-selection_button">
+      <button (click)="addCrewMemberSelection()" color="accent" mat-mini-fab
+              matTooltip="Mannschaft Zeitangabe hinzufügen">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>

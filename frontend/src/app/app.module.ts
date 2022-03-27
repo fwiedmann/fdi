@@ -24,6 +24,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {CrewManagerComponent} from './crew-manager/crew-manager.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {CrewSelectionsComponent} from './crew-selections/crew-selections.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import {CrewSelectionsComponent} from './crew-selections/crew-selections.compone
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

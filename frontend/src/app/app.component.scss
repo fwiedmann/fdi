@@ -2,31 +2,17 @@
   min-height: 100vh;
   min-width: 100vw;
 
+  &__meta_data {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: flex-end;
+  }
+
   &__body {
     min-height: 100vh;
     min-width: 100vw;
     background-color: #e6f0fa;
-  }
-
-  &__crew-selections {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    padding-left: 10px;
-  }
-
-  &__add_crew-selection_button {
-    min-width: 270px;
-    margin: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 380px;
-    width: 18vw;
-
-    border-radius: 25px;
-    border-color: grey;
-    border-style: dashed;
   }
 
   &__header {
@@ -41,6 +27,7 @@
     width: 40vh;
     min-width: 250px;
     margin-left: 20px;
+    margin-bottom: 20px;
   }
 
 
