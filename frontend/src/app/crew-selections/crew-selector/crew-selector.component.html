@@ -6,22 +6,31 @@
       </button>
     </div>
 
-    <h3><b>Select time period</b></h3>
+    <mat-slide-toggle
+      (change)="withCustomDate=$event.checked"
+    >With custom date
+    </mat-slide-toggle>
 
-    <mat-form-field>
-      <input (dateChange)="updateInputStart()" [formControl]="dateControlStart" [ngxMatDatetimePicker]="picker1"
-             matInput
-             placeholder="Choose a start">
-      <mat-datepicker-toggle [for]="$any(picker1)" matSuffix></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker1 [defaultTime]="getStartDate()" [showSeconds]="false"></ngx-mat-datetime-picker>
-    </mat-form-field>
-    <mat-form-field>
-      <input (dateChange)="updateInputEnd()" [formControl]="dateControlEnd" [ngxMatDatetimePicker]="picker2" matInput
-             placeholder="Choose an end">
-      <mat-datepicker-toggle [for]="$any(picker2)" matSuffix></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker2 [defaultTime]="getEndDate()"
-                               [showSeconds]="false"></ngx-mat-datetime-picker>
-    </mat-form-field>
+    <div *ngIf="withCustomDate">
+      <h3><b>Select time period</b></h3>
+
+      <mat-form-field>
+        <input (dateChange)="updateInputStart()" [formControl]="dateControlStart" [ngxMatDatetimePicker]="picker1"
+               matInput
+               placeholder="Choose a start">
+        <mat-datepicker-toggle [for]="$any(picker1)" matSuffix></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #picker1 [defaultTime]="getStartDate()"
+                                 [showSeconds]="false"></ngx-mat-datetime-picker>
+      </mat-form-field>
+      <mat-form-field>
+        <input (dateChange)="updateInputEnd()" [formControl]="dateControlEnd" [ngxMatDatetimePicker]="picker2" matInput
+               placeholder="Choose an end">
+        <mat-datepicker-toggle [for]="$any(picker2)" matSuffix></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #picker2 [defaultTime]="getEndDate()"
+                                 [showSeconds]="false"></ngx-mat-datetime-picker>
+      </mat-form-field>
+
+    </div>
 
     <h3><b>Select members</b></h3>
     <table [dataSource]="crewMembers" class="crew-selector__table" mat-table>

@@ -25,6 +25,7 @@ import {CrewManagerComponent} from './crew-manager/crew-manager.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {CrewSelectionsComponent} from './crew-selections/crew-selections.component';
 import {MatChipsModule} from "@angular/material/chips";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import {MatChipsModule} from "@angular/material/chips";
     FormsModule,
     MatInputModule,
     MatDialogModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

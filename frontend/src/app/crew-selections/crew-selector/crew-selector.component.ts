@@ -53,6 +53,8 @@ export class CrewSelectorComponent implements OnInit {
   dateControlStart = new FormControl();
   dateControlEnd = new FormControl();
 
+  withCustomDate: boolean = false;
+
 
   constructor() {
 
@@ -144,8 +146,8 @@ export class CrewSelectorComponent implements OnInit {
     this.crewSelectorResponse$.emit({
       id: this.id,
       crew: this.checkedMembers,
-      startDate: this.startDate ? this.startDate : Date.now(),
-      endDate: this.endDate ? this.endDate : Date.now()
+      startDate: this.startDate || Date.now(),
+      endDate: this.endDate || Date.now()
     } as CrewSelectorResponse);
   }
 
