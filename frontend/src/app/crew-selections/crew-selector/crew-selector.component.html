@@ -1,7 +1,7 @@
 <div class="crew-selector">
   <mat-card>
     <div class="crew-selector__close-button">
-      <button (click)="deleteComponent()" mat-icon-button color="accent">
+      <button (click)="deleteComponent()" color="accent" mat-icon-button>
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -9,36 +9,41 @@
     <h3><b>Select time period</b></h3>
 
     <mat-form-field>
-      <input matInput [ngxMatDatetimePicker]="picker1" (dateChange)="updateInputStart()" placeholder="Choose a start" [formControl]="dateControlStart">
-      <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker [showSeconds]="false" #picker1></ngx-mat-datetime-picker>
+      <input (dateChange)="updateInputStart()" [formControl]="dateControlStart" [ngxMatDatetimePicker]="picker1"
+             matInput
+             placeholder="Choose a start">
+      <mat-datepicker-toggle [for]="$any(picker1)" matSuffix></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker1 [defaultTime]="getStartDate()" [showSeconds]="false"></ngx-mat-datetime-picker>
     </mat-form-field>
     <mat-form-field>
-      <input matInput  [ngxMatDatetimePicker]="picker2" (dateChange)="updateInputEnd()" placeholder="Choose an end" [formControl]="dateControlEnd">
-      <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker [showSeconds]="false" #picker2></ngx-mat-datetime-picker>
+      <input (dateChange)="updateInputEnd()" [formControl]="dateControlEnd" [ngxMatDatetimePicker]="picker2" matInput
+             placeholder="Choose an end">
+      <mat-datepicker-toggle [for]="$any(picker2)" matSuffix></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker2 [defaultTime]="getEndDate()"
+                               [showSeconds]="false"></ngx-mat-datetime-picker>
     </mat-form-field>
 
     <h3><b>Select members</b></h3>
-    <table class="crew-selector__table" mat-table [dataSource]="crewMembers">
-      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-      <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+    <table [dataSource]="crewMembers" class="crew-selector__table" mat-table>
+      <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+      <tr *matRowDef="let myRowData; columns: columnsToDisplay" mat-row></tr>
       <ng-container matColumnDef="members">
-        <th mat-header-cell *matHeaderCellDef>Members</th>
-        <td mat-cell *matCellDef="let member"> {{member.surname}} {{member.name}} </td>
+        <th *matHeaderCellDef mat-header-cell>Members</th>
+        <td *matCellDef="let member" mat-cell> {{member.surname}} {{member.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="duty">
-        <th mat-header-cell *matHeaderCellDef>Duty</th>
-        <td mat-cell *matCellDef="let member">
+        <th *matHeaderCellDef mat-header-cell>Duty</th>
+        <td *matCellDef="let member" mat-cell>
           <mat-checkbox (change)="onCheckboxEventInOperation($event, member)" [name]="member"></mat-checkbox>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="dirtAllowance">
-        <th mat-header-cell *matHeaderCellDef>Dirt Allowance</th>
-        <td mat-cell *matCellDef="let member">
-          <mat-checkbox [disabled]="!isPermittedForDirtAllowance(member.id)" (change)="onCheckboxEventDirtAllowance($event, member)" [name]="member"></mat-checkbox>
+        <th *matHeaderCellDef mat-header-cell>Dirt Allowance</th>
+        <td *matCellDef="let member" mat-cell>
+          <mat-checkbox (change)="onCheckboxEventDirtAllowance($event, member)"
+                        [disabled]="!isPermittedForDirtAllowance(member.id)" [name]="member"></mat-checkbox>
         </td>
       </ng-container>
     </table>

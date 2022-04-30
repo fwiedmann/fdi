@@ -33,7 +33,8 @@
         </mat-card>
       </div>
     </div>
-    
-    <app-crew-selections (crewSelections$)="crewSelections=$event"></app-crew-selections>
+
+    <app-crew-selections (crewSelections$)="crewSelections=$event" [endDate]="emergencyMetaData?.endDate"
+                         [startDate]="emergencyMetaData?.startDate"></app-crew-selections>
   </div>
 </div>

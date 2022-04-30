@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormControl} from '@angular/forms';
 
 export type MetaData = {
   startDate: Date;
@@ -32,6 +32,8 @@ export class EmergencyBaseDataComponent implements OnInit {
 
   dateControlStart = new FormControl();
   dateControlEnd = new FormControl();
+
+  defaultDate = [0, 0, 0]
 
   constructor() {
   }

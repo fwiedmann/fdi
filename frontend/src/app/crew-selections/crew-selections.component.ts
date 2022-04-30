@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CrewMembersService, Member} from "../crew-members.service";
 import {v4 as uuidv4} from "uuid";
 import {CrewSelectorResponse} from "./crew-selector/crew-selector.component";
@@ -12,6 +12,11 @@ import {takeUntil} from "rxjs/operators";
 })
 export class CrewSelectionsComponent implements OnInit, OnDestroy {
 
+
+  @Input()
+  startDate: Date | undefined;
+  @Input()
+  endDate: Date | undefined;
   @Output()
   crewSelections$ = new EventEmitter<CrewSelectorResponse[]>()
 

@@ -132,6 +132,14 @@ export class CrewSelectorComponent implements OnInit {
     this.emmitCurrentState();
   }
 
+  getStartDate(): number[] {
+    return this.getDate(this.startDate || new Date())
+  }
+
+  getEndDate(): number[] {
+    return this.getDate(this.endDate || new Date())
+  }
+
   private emmitCurrentState() {
     this.crewSelectorResponse$.emit({
       id: this.id,
@@ -140,4 +148,9 @@ export class CrewSelectorComponent implements OnInit {
       endDate: this.endDate ? this.endDate : Date.now()
     } as CrewSelectorResponse);
   }
+
+  private getDate(date: Date): number [] {
+    return [date.getHours(), date.getMinutes(), 0]
+  }
+
 }
